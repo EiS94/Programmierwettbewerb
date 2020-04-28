@@ -40,4 +40,9 @@ public class Edge {
     public int hashCode() {
         return Objects.hash(weight, start, end);
     }
+
+    @Override
+    public String toString() {
+        return start + " -> " + end;
+    }
 }
