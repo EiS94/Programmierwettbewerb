@@ -3,7 +3,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Arrays;
 
-public class Test {
+public class ProblemYTest {
 
     public static final String sample = "3\n" +
             "2\n" +
