@@ -1,6 +1,7 @@
 package Graph;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class Node {
@@ -8,9 +9,14 @@ public class Node {
     private Nodestatus status;
     private int x;
     private int y;
+    private int d;
+    private Node bfsParentNode;
+    private HashSet<Node> neighbours;
 
     public Node(int x, int y) {
         status = Nodestatus.white;
+        d=-1;
+        bfsParentNode = null;
         this.x = x;
         this.y = y;
     }
@@ -39,6 +45,22 @@ public class Node {
         this.y = y;
     }
 
+    public int getD() {
+        return d;
+    }
+
+    public void setD(int d) {
+        this.d = d;
+    }
+
+    public Node getBfsParentNode() {
+        return bfsParentNode;
+    }
+
+    public void setBfsParentNode(Node bfsParentNode) {
+        this.bfsParentNode = bfsParentNode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,12 +70,21 @@ public class Node {
                 y == node.y;
     }
 
-    public HashSet<Node> getNeighbours(HashSet<Edge> edges) {
-        HashSet<Node> nodes = new HashSet<>();
+    public void intNeighbours(Graph graph, HashSet<Edge> edges) {
+        neighbours = new HashSet<Node>();
         for (Edge edge : edges) {
-            if (edge.start.equals(this)) nodes.add(edge.end);
+            if (edge.start.equals(this)) {
+                for (Node node:graph.getNodes()){
+                    if (node.equals(edge.end)){
+                        neighbours.add(node);
+                    }
+                }
+            }
         }
-        return nodes;
+    }
+
+    public HashSet<Node> getNeighbours() {
+        return neighbours;
     }
 
     @Override

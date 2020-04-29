@@ -113,7 +113,7 @@ public class GraphTranslator {
         int counter = 0;
         for (int i = h + 3; i < split.length; i++) {
             String[] s = split[i].split(" ");
-            path[counter] = new Node(Integer.parseInt(s[0]), Integer.parseInt(s[1]));
+            path[counter] = new Node(Integer.parseInt(s[1]), Integer.parseInt(s[0]));
             counter++;
         }
 

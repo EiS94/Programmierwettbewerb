@@ -33,12 +33,29 @@ public class Main {
                 "2 2\n" +
                 "5 4\n";
 
+
+        String sample3 = "2 6\n" +
+                " _ _ _ _ _ _ \n" +
+                "|  _ _ _ _ _|\n" +
+                "|_ _ _ _ _ _|\n" +
+                "2\n" +
+                "1 5\n" +
+                "1 1";
+
+        String sample4 = "2 2\n" +
+                " _ _ \n" +
+                "| | |\n" +
+                "|_ _|\n" +
+                "2\n" +
+                "1 1\n" +
+                "2 2\n";
+
+
         Graph graph = GraphTranslator.convertInput(sample2);
         Node[] path = graph.getPath();
-
-        Iterator<Node> it = graph.getNodes().iterator();
-        Node test = it.next();
-        HashSet<Node> neighbourNodes = test.getNeighbours(graph.getEdges());
+        for (Node node:graph.getNodes()){
+            node.intNeighbours(graph, graph.getEdges());
+        }
 
         int pathlength = 0;
         for (int i = 0; i < path.length-1; i++) {
@@ -46,4 +63,5 @@ public class Main {
         }
         System.out.print(pathlength);
     }
+
 }
