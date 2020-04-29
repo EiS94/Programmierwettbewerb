@@ -42,7 +42,7 @@ public class Main {
 
         int pathlength = 0;
         for (int i = 0; i < path.length-1; i++) {
-            pathlength += Dijkstra.findShortestPath(graph, path[i], path[i+1]);
+            pathlength += Breitensuche.findShortestPath(graph, path[i], path[i+1]);
         }
         System.out.print(pathlength);
     }
