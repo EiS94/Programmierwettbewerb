@@ -1,31 +1,30 @@
 package Graph;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
 public class Graph {
 
-    ArrayList<Node> pfad;
-    HashSet<Node> knoten;
-    HashSet<Edge> kanten;
+    Node[] path;
+    HashSet<Node> nodes;
+    HashSet<Edge> edges;
 
-    public Graph(ArrayList<Node> pfad, HashSet<Node> knoten, HashSet<Edge> kanten){
-        this.pfad = pfad;
-        this.knoten = knoten;
-        this.kanten = kanten;
+    public Graph(Node[] pfad, HashSet<Node> knoten, HashSet<Edge> kanten){
+        this.path = pfad;
+        this.nodes = knoten;
+        this.edges = kanten;
     }
 
-    public ArrayList<Node> getPfad() {
-        return pfad;
+    public Node[] getPath() {
+        return path;
     }
 
-    public HashSet<Node> getKnoten() {
-        return knoten;
+    public HashSet<Node> getNodes() {
+        return nodes;
     }
 
-    public HashSet<Edge> getKanten() {
-        return kanten;
+    public HashSet<Edge> getEdges() {
+        return edges;
     }
 
     @Override
@@ -33,13 +32,13 @@ public class Graph {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Graph graph = (Graph) o;
-        return Objects.equals(pfad, graph.pfad) &&
-                Objects.equals(knoten, graph.knoten) &&
-                Objects.equals(kanten, graph.kanten);
+        return Objects.equals(path, graph.path) &&
+                Objects.equals(nodes, graph.nodes) &&
+                Objects.equals(edges, graph.edges);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pfad, knoten, kanten);
+        return Objects.hash(path, nodes, edges);
     }
 }
