@@ -16,63 +16,38 @@ public class Main {
         totalTime = endTime - startTime;
         System.out.println("\n" + totalTime/1000000000.0 + "s");
         */
+        long totalStartTime;
+        long totalEndTime;
+        long totalTotalTime;
 
 
-        startTime = System.nanoTime();
-        test();
-        endTime   = System.nanoTime();
-        totalTime = endTime - startTime;
-        System.out.println("\n" + totalTime/1000000000.0 + "s");
+        totalStartTime = System.nanoTime();
+        long total = 0;
+        int trys = 100000;
+        for (int i = 0; i < trys; i++) {
+            startTime = System.nanoTime();
+            test(Samples.createSample5(10000));
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
+            total += totalTime;
+            //System.out.println("\n" + totalTime / 1000000000.0 + "s");
+            System.out.println(i);
+        }
+        total = total;
+        System.out.println("\naverage = " + (total / trys / 1000000000.0) + "s");
+
+        totalEndTime   = System.nanoTime();
+        totalTotalTime = totalEndTime - totalStartTime;
+        System.out.println("\ntotal time = " + totalTotalTime/1000000000.0 + "s");
     }
 
-    public static void test() {
-        String sample = "2 6\n" +
-                " _ _ _ _ _ _ \n" +
-                "|  _ _ _ _ _|\n" +
-                "|_ _ _ _ _ _|\n" +
-                "2\n" +
-                "1 1\n" +
-                "2 1\n";
+    public static void test(String input) {
 
-        String sample2 = "5 5\n" +
-                " _ _ _ _ _ \n" +
-                "|_ _  |_  |\n" +
-                "|  _| |  _|\n" +
-                "| |_   _| |\n" +
-                "|    _ _  |\n" +
-                "|_|_ _ _|_|\n" +
-                "7\n" +
-                "4 4\n" +
-                "1 4\n" +
-                "3 1\n" +
-                "4 5\n" +
-                "1 2\n" +
-                "2 2\n" +
-                "5 4\n";
-
-
-        String sample3 = "2 6\n" +
-                " _ _ _ _ _ _ \n" +
-                "|  _ _ _ _ _|\n" +
-                "|_ _ _ _ _ _|\n" +
-                "2\n" +
-                "1 5\n" +
-                "1 1";
-
-        String sample4 = "2 2\n" +
-                " _ _ \n" +
-                "| | |\n" +
-                "|_ _|\n" +
-                "2\n" +
-                "1 1\n" +
-                "2 2\n";
-
-        Tuple t = GraphTranslator.convertInputArray(sample);
+        Tuple t = GraphTranslator.convertInputArray(input);
         int pathlength = 0;
         for (int i = 0; i < t.getPath().length - 1; i++) {
             pathlength += Breitensuche.findShortestPath(t.getWidth(), t.getGraph(), t.getPath()[i], t.getPath()[i+1]);
         }
-        System.out.println("test: " + pathlength);
     }
 
     public static void testNewBFS(){
@@ -103,53 +78,9 @@ public class Main {
         System.out.println("testNewBFS: " + pathlength);
     }
 
-    public static void testGraphBFS(){
-        String sample = "2 6\n" +
-                " _ _ _ _ _ _ \n" +
-                "|  _ _ _ _ _|\n" +
-                "|_ _ _ _ _ _|\n" +
-                "5\n" +
-                "1 5\n" +
-                "1 1\n" +
-                "1 6\n" +
-                "1 1\n" +
-                "1 5";
+    public static void testGraphBFS(String input){
 
-        String sample2 = "5 5\n" +
-                " _ _ _ _ _ \n" +
-                "|_ _  |_  |\n" +
-                "|  _| |  _|\n" +
-                "| |_   _| |\n" +
-                "|    _ _  |\n" +
-                "|_|_ _ _|_|\n" +
-                "7\n" +
-                "4 4\n" +
-                "1 4\n" +
-                "3 1\n" +
-                "4 5\n" +
-                "1 2\n" +
-                "2 2\n" +
-                "5 4\n";
-
-
-        String sample3 = "2 6\n" +
-                " _ _ _ _ _ _ \n" +
-                "|  _ _ _ _ _|\n" +
-                "|_ _ _ _ _ _|\n" +
-                "2\n" +
-                "1 5\n" +
-                "1 1";
-
-        String sample4 = "2 2\n" +
-                " _ _ \n" +
-                "| | |\n" +
-                "|_ _|\n" +
-                "2\n" +
-                "1 1\n" +
-                "2 2\n";
-
-
-        Graph graph = GraphTranslator.convertInput(sample);
+        Graph graph = GraphTranslator.convertInput(input);
         Node[] path = graph.getPath();
         for (Node node:graph.getNodes()){
             node.intNeighbours(graph, graph.getEdges());
