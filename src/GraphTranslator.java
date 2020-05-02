@@ -8,6 +8,67 @@ import Graph.Edge;
 
 public class GraphTranslator {
 
+
+    public static Tuple convertInputArray(String input) {
+        //Split input per Line
+        String[] split = input.split("\n");
+
+        //Split firstLine by whitespace to get width and heigth
+        String[] firstLine = split[0].split(" ");
+        int h = Integer.parseInt(firstLine[0]);
+        int w = Integer.parseInt(firstLine[1]);
+
+        int[][] graphArray = new int[w * h][4];
+
+        //write mazeString to a seperate 2-D Array with h+1 and 2*w+1 fields
+        char[][] mazeString = new char[2 * w + 1][h + 1];
+        for (int y = 0; y < h + 1; y++) {
+            for (int x = 0; x < 2 * w + 1; x++) {
+                mazeString[x][y] = split[1 + y].charAt(x);
+            }
+        }
+
+        for (int height = 1; height < h; height++) {
+            for (int width = 1; width < 2 * w; width++) {
+                char module = mazeString[width][height];
+                if (module == ' ') {
+                    //no horizontal wall |
+                    if (width % 2 == 0) {
+
+                        //no right wall
+                        //int nodeX = ((width - 1) / 2) -1;
+                        //int nodeY = height - 1;
+                        graphArray[(width - 2) / 2 * (height - 1)][1] = 1;
+
+                        //no left wall
+                        //nodeX = ((width + 1) / 2) - 1;
+                        //nodeY = height - 1;
+                        graphArray[width / 2 * (height - 1)][3] = 1;
+                    } else {
+                        //no lower wall _
+                        graphArray[(width - 1) / 2 * (height - 1)][2] = 1;
+
+                        //no upper wall _
+                        graphArray[(width - 1) / 2 * height][0] = 1;
+                    }
+                }
+            }
+        }
+
+        int[] path = new int[Integer.parseInt(split[h + 2])];
+
+        int counter = 0;
+        for (int i = h+3; i < split.length; i++) {
+            String[] s = split[i].split(" ");
+            int width = Integer.parseInt(s[1]) - 1;
+            int height = Integer.parseInt(s[0]) -1;
+            path[counter++] = width + (height * width);
+        }
+
+        return new Tuple(graphArray, path, w);
+    }
+
+
     public static Graph convertInput(String input) {
         //Split input per Line
         String[] split = input.split("\n");
@@ -33,7 +94,7 @@ public class GraphTranslator {
         int yMaze = 1;
         for (int y = 1; y < h + 1; y++) {
             int xMaze = 1;
-            for (int x = 1; x < 2 * w + 1; x+=2){
+            for (int x = 1; x < 2 * w + 1; x += 2) {
 
                 //add the checked Module to the Node-list if not already happened
                 Node node = new Node(xMaze, yMaze);
@@ -41,32 +102,28 @@ public class GraphTranslator {
 
                 //check neighbour in same line right
                 try {
-                    if (maze[x+1][y] != '|') {
+                    if (maze[x + 1][y] != '|') {
                         //add neighbour node to nodes-list if not already happened
                         Node neighbour = new Node(xMaze + 1, yMaze);
 
-                        if(checkNeighbour(maze[x][y], maze[x+2][y], Line.SAME)) {
-                            if (!nodes.contains(neighbour)) nodes.add(neighbour);
-                            //add edge to edges-List
-                            Edge edge = new Edge(node, neighbour);
-                            if (!edges.contains(edge)) edges.add(edge);
-                        }
+                        if (!nodes.contains(neighbour)) nodes.add(neighbour);
+                        //add edge to edges-List
+                        Edge edge = new Edge(node, neighbour);
+                        if (!edges.contains(edge)) edges.add(edge);
                     }
                 } catch (IndexOutOfBoundsException e) {
                     //don't call checkNeighbour if the neighbours char is not in array-bound
                 }
                 //check neighbour in same line left
                 try {
-                    if (maze[x-1][y] != '|') {
+                    if (maze[x - 1][y] != '|') {
                         //add neighbour node to nodes-list if not already happened
                         Node neighbour = new Node(xMaze - 1, yMaze);
 
-                        if(checkNeighbour(maze[x][y], maze[x-2][y], Line.SAME)) {
-                            if (!nodes.contains(neighbour)) nodes.add(neighbour);
-                            //add edge to edges-List
-                            Edge edge = new Edge(node, neighbour);
-                            if (!edges.contains(edge)) edges.add(edge);
-                        }
+                        if (!nodes.contains(neighbour)) nodes.add(neighbour);
+                        //add edge to edges-List
+                        Edge edge = new Edge(node, neighbour);
+                        if (!edges.contains(edge)) edges.add(edge);
                     }
                 } catch (IndexOutOfBoundsException e) {
                     //don't call checkNeighbour if the neighbours char is not in array-bound
@@ -77,7 +134,7 @@ public class GraphTranslator {
                     //add neighbour node to nodes-list if not already happened
                     Node neighbour = new Node(xMaze, yMaze - 1);
 
-                    if (checkNeighbour(maze[x][y], maze[x][y-1], Line.UPPER)) {
+                    if (checkNeighbour(maze[x][y], maze[x][y - 1], Line.UPPER)) {
                         if (!nodes.contains(neighbour)) nodes.add(neighbour);
                         //add edge to edges-List
                         Edge edge = new Edge(node, neighbour);
@@ -92,7 +149,7 @@ public class GraphTranslator {
                     //add neighbour node to nodes-list if not already happened
                     Node neighbour = new Node(xMaze, yMaze + 1);
 
-                    if (checkNeighbour(maze[x][y], maze[x][y+1], Line.DOWNER)) {
+                    if (checkNeighbour(maze[x][y], maze[x][y + 1], Line.DOWNER)) {
                         if (!nodes.contains(neighbour)) nodes.add(neighbour);
                         //add edge to edges-List
                         Edge edge = new Edge(node, neighbour);
@@ -131,9 +188,6 @@ public class GraphTranslator {
                         return true;
                     case '_':
                         switch (line) {
-                            case SAME:
-                                //case : "x_" or "_x"
-                                return true;
                             case UPPER:
                                 //case : "_"
                                 //       "x"
@@ -143,10 +197,6 @@ public class GraphTranslator {
                                 //      "_"
                                 return true;
                         }
-                    case '|':
-                        //can only appear as neighbour in the same line
-                        //case: "x|" or "|x"
-                        return false;
                 }
             case '_':
                 //no possible way to downer line
@@ -163,14 +213,7 @@ public class GraphTranslator {
                                 //case: "_"
                                 //      "_"
                                 return false;
-                            case SAME:
-                                //case: "__"
-                                return true;
                         }
-                    case '|':
-                        //can only appear as neighbour in the same line
-                        //case: "_|" or "|_"
-                        return false;
                 }
             default:
                 return false;

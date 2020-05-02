@@ -14,10 +14,63 @@ public class Main {
 
 
         startTime = System.nanoTime();
-        testGraphBFS();
+        test();
         endTime   = System.nanoTime();
         totalTime = endTime - startTime;
         System.out.println("\n" + totalTime/1000000000.0 + "s");
+    }
+
+    public static void test() {
+        String sample = "2 6\n" +
+                " _ _ _ _ _ _ \n" +
+                "|  _ _ _ _ _|\n" +
+                "|_ _ _ _ _ _|\n" +
+                "5\n" +
+                "1 5\n" +
+                "1 1\n" +
+                "1 6\n" +
+                "1 1\n" +
+                "1 5";
+
+        String sample2 = "5 5\n" +
+                " _ _ _ _ _ \n" +
+                "|_ _  |_  |\n" +
+                "|  _| |  _|\n" +
+                "| |_   _| |\n" +
+                "|    _ _  |\n" +
+                "|_|_ _ _|_|\n" +
+                "7\n" +
+                "4 4\n" +
+                "1 4\n" +
+                "3 1\n" +
+                "4 5\n" +
+                "1 2\n" +
+                "2 2\n" +
+                "5 4\n";
+
+
+        String sample3 = "2 6\n" +
+                " _ _ _ _ _ _ \n" +
+                "|  _ _ _ _ _|\n" +
+                "|_ _ _ _ _ _|\n" +
+                "2\n" +
+                "1 5\n" +
+                "1 1";
+
+        String sample4 = "2 2\n" +
+                " _ _ \n" +
+                "| | |\n" +
+                "|_ _|\n" +
+                "2\n" +
+                "1 1\n" +
+                "2 2\n";
+
+        Tuple t = GraphTranslator.convertInputArray(sample);
+        int pathlength = 0;
+        for (int i = 0; i < t.getPath().length - 1; i++) {
+            pathlength += Breitensuche.findShortestPath(t.getWidth(), t.getGraph(), t.getPath()[i], t.getPath()[i+1]);
+        }
+        System.out.println("test: " + pathlength);
     }
 
     public static void testNewBFS(){
@@ -32,8 +85,6 @@ public class Main {
                                 {1,1,0,0},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,0,0,1}};
         int widthSample = 6;
         int[] pathSample = {5, 1, 6, 1, 5};
-
-
 
 
         int[][] testGraph = graphSample;
