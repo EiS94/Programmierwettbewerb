@@ -6,6 +6,51 @@ import java.util.Iterator;
 public class Main {
 
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
+        testNewBFS();
+        long endTime   = System.nanoTime();
+        long totalTime = endTime - startTime;
+        System.out.println("\n" + totalTime/1000000000.0 + "s");
+
+
+        startTime = System.nanoTime();
+        testGraphBFS();
+        endTime   = System.nanoTime();
+        totalTime = endTime - startTime;
+        System.out.println("\n" + totalTime/1000000000.0 + "s");
+    }
+
+    public static void testNewBFS(){
+        //Sample4
+        int[][] graphSample4 = {{0,0,1,0},{0,0,1,0},
+                                {1,1,0,0},{1,0,0,1}};
+        int widthSample4 = 2;
+        int[] pathSample4 = {0, 3};
+
+        //Sample
+        int[][] graphSample = {{0,1,1,0},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,0,0,1},
+                                {1,1,0,0},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,0,0,1}};
+        int widthSample = 6;
+        int[] pathSample = {5, 1, 6, 1, 5};
+
+
+
+
+        int[][] testGraph = graphSample;
+        int testWidth = widthSample;
+        int[] testPath = pathSample;
+        for (int i = 0; i < testPath.length; i++) {
+            --pathSample[i];
+        }
+
+        int pathlength = 0;
+        for (int i = 0; i < testPath.length - 1; i++) {
+            pathlength += Breitensuche.findShortestPath(testWidth, testGraph, testPath[i], testPath[i+1]);
+        }
+        System.out.println("testNewBFS: " + pathlength);
+    }
+
+    public static void testGraphBFS(){
         String sample = "2 6\n" +
                 " _ _ _ _ _ _ \n" +
                 "|  _ _ _ _ _|\n" +
@@ -51,7 +96,7 @@ public class Main {
                 "2 2\n";
 
 
-        Graph graph = GraphTranslator.convertInput(sample2);
+        Graph graph = GraphTranslator.convertInput(sample);
         Node[] path = graph.getPath();
         for (Node node:graph.getNodes()){
             node.intNeighbours(graph, graph.getEdges());
