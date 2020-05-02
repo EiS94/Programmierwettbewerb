@@ -28,7 +28,7 @@ public class GraphTranslator {
             }
         }
 
-        for (int height = 1; height < h; height++) {
+        for (int height = 1; height < h + 1; height++) {
             for (int width = 1; width < 2 * w; width++) {
                 char module = mazeString[width][height];
                 if (module == ' ') {
@@ -38,18 +38,18 @@ public class GraphTranslator {
                         //no right wall
                         //int nodeX = ((width - 1) / 2) -1;
                         //int nodeY = height - 1;
-                        graphArray[(width - 2) / 2 * (height - 1)][1] = 1;
+                        graphArray[(width - 2) / 2 + (height - 1) * w][1] = 1;
 
                         //no left wall
                         //nodeX = ((width + 1) / 2) - 1;
                         //nodeY = height - 1;
-                        graphArray[width / 2 * (height - 1)][3] = 1;
+                        graphArray[width / 2 + (height - 1) * w][3] = 1;
                     } else {
                         //no lower wall _
-                        graphArray[(width - 1) / 2 * (height - 1)][2] = 1;
+                        graphArray[(width - 1) / 2 + (height - 1) * w][2] = 1;
 
                         //no upper wall _
-                        graphArray[(width - 1) / 2 * height][0] = 1;
+                        graphArray[(width - 1) / 2 + height * w][0] = 1;
                     }
                 }
             }
