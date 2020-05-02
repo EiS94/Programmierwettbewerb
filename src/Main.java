@@ -6,11 +6,16 @@ import java.util.Iterator;
 public class Main {
 
     public static void main(String[] args) {
-        long startTime = System.nanoTime();
+        long startTime;
+        long endTime;
+        long totalTime;
+        /*
+        startTime = System.nanoTime();
         testNewBFS();
-        long endTime   = System.nanoTime();
-        long totalTime = endTime - startTime;
+        endTime   = System.nanoTime();
+        totalTime = endTime - startTime;
         System.out.println("\n" + totalTime/1000000000.0 + "s");
+        */
 
 
         startTime = System.nanoTime();

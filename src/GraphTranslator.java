@@ -62,7 +62,7 @@ public class GraphTranslator {
             String[] s = split[i].split(" ");
             int width = Integer.parseInt(s[1]) - 1;
             int height = Integer.parseInt(s[0]) -1;
-            path[counter++] = width + (height * width);
+            path[counter++] = width + (height * w);
         }
 
         return new Tuple(graphArray, path, w);
