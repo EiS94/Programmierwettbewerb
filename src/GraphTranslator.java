@@ -10,6 +10,7 @@ public class GraphTranslator {
 
 
     public static Tuple convertInputArray(String input) {
+        long start = System.nanoTime();
         //Split input per Line
         String[] split = input.split("\n");
 
@@ -65,11 +66,16 @@ public class GraphTranslator {
             path[counter++] = width + (height * w);
         }
 
+        Double end = (System.nanoTime() - start)/1000000000.0;
+        System.out.println("Translator-Zeit Array: " + end + " s");
+
         return new Tuple(graphArray, path, w);
     }
 
 
     public static Graph convertInput(String input) {
+        Long start = System.nanoTime();
+
         //Split input per Line
         String[] split = input.split("\n");
 
@@ -173,6 +179,9 @@ public class GraphTranslator {
             path[counter] = new Node(Integer.parseInt(s[1]), Integer.parseInt(s[0]));
             counter++;
         }
+
+        Double end = (System.nanoTime() - start)/1000000000.0;
+        System.out.println("Translator-Zeit Graph: " + end + " s");
 
         return new Graph(path, nodes, edges);
     }

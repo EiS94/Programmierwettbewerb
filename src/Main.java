@@ -8,7 +8,28 @@ public class Main {
     public static void main(String[] args) {
         long startTime;
         long endTime;
+        double endTime2;
+        double endTime3;
         long totalTime;
+
+        int width = 32;
+        int heigth = 200;
+        int paths = 50;
+        startTime = System.nanoTime();
+        String sample = Samples.createSample(width,heigth,paths);
+        int pathlength = test(sample);
+        endTime2 = (System.nanoTime() - startTime)/1000000000.0;
+
+        startTime = System.nanoTime();
+        pathlength = testGraphBFS(sample);
+        endTime3 = (System.nanoTime() - startTime)/1000000000.0;
+
+        System.out.println("Höhe: " + heigth + ", Breite: " + width + ", Anzahl Pfade: " + paths);
+        System.out.println("Pfadlänge Array: " +  pathlength);
+        System.out.println("Pfadlänge Graph: " + pathlength);
+        System.out.println("Dauer Array: " + endTime2 + " s");
+        System.out.println("Dauer Graph: " + endTime3 + " s");
+
         /*
         startTime = System.nanoTime();
         testNewBFS();
@@ -16,14 +37,17 @@ public class Main {
         totalTime = endTime - startTime;
         System.out.println("\n" + totalTime/1000000000.0 + "s");
         */
-        long totalStartTime;
+
+
+        /*long totalStartTime;
         long totalEndTime;
         long totalTotalTime;
 
 
-        totalStartTime = System.nanoTime();
+
         long total = 0;
-        int trys = 100000;
+        int trys = 1000;
+        totalStartTime = System.nanoTime();
         for (int i = 0; i < trys; i++) {
             startTime = System.nanoTime();
             test(Samples.createSample5(10000));
@@ -31,7 +55,7 @@ public class Main {
             totalTime = endTime - startTime;
             total += totalTime;
             //System.out.println("\n" + totalTime / 1000000000.0 + "s");
-            System.out.println(i);
+            //System.out.println(i);
         }
         total = total;
         System.out.println("\naverage = " + (total / trys / 1000000000.0) + "s");
@@ -39,15 +63,36 @@ public class Main {
         totalEndTime   = System.nanoTime();
         totalTotalTime = totalEndTime - totalStartTime;
         System.out.println("\ntotal time = " + totalTotalTime/1000000000.0 + "s");
+
+
+        total = 0;
+        trys = 1000;
+        totalStartTime = System.nanoTime();
+        for (int i = 0; i < trys; i++) {
+            startTime = System.nanoTime();
+            testGraphBFS(Samples.createSample5(10000));
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
+            total += totalTime;
+            //System.out.println("\n" + totalTime / 1000000000.0 + "s");
+            //System.out.println(i);
+        }
+        total = total;
+        System.out.println("\naverage = " + (total / trys / 1000000000.0) + "s");
+
+        totalEndTime   = System.nanoTime();
+        totalTotalTime = totalEndTime - totalStartTime;
+        System.out.println("\ntotal time = " + totalTotalTime/1000000000.0 + "s");*/
     }
 
-    public static void test(String input) {
+    public static int test(String input) {
 
         Tuple t = GraphTranslator.convertInputArray(input);
         int pathlength = 0;
         for (int i = 0; i < t.getPath().length - 1; i++) {
             pathlength += Breitensuche.findShortestPath(t.getWidth(), t.getGraph(), t.getPath()[i], t.getPath()[i+1]);
         }
+        return pathlength;
     }
 
     public static void testNewBFS(){
@@ -78,19 +123,25 @@ public class Main {
         System.out.println("testNewBFS: " + pathlength);
     }
 
-    public static void testGraphBFS(String input){
+    public static int testGraphBFS(String input){
 
         Graph graph = GraphTranslator.convertInput(input);
         Node[] path = graph.getPath();
+
+        Long start = System.nanoTime();
+
         for (Node node:graph.getNodes()){
             node.intNeighbours(graph, graph.getEdges());
         }
+
+        Double end = (System.nanoTime() - start)/1000000000.0;
+        System.out.println("Knotennachbarn bestimmen: " + end + " s");
 
         int pathlength = 0;
         for (int i = 0; i < path.length-1; i++) {
             pathlength += Breitensuche.findShortestPath(graph, path[i], path[i+1]);
         }
-        System.out.print(pathlength);
+        return pathlength;
     }
 
 }
