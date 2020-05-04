@@ -1,5 +1,6 @@
 import Graph.*;
 
+
 import java.util.LinkedList;
 
 public class Breitensuche {
@@ -136,5 +137,54 @@ public class Breitensuche {
             }
         }
         return d[b];
+    }
+
+    public static int[] returnTree(int width, int[][] graph){
+        int[] color = new int[graph.length];
+        int[] parent = new int[graph.length];
+        color[0] = 1;
+        LinkedList<Integer> queue = new LinkedList<Integer>();
+        queue.add(0);
+        parent[0] = -1;
+        while(!queue.isEmpty()){
+            int u = queue.remove(0);
+            int up = u - width;
+            int right = (u + 1);
+            int left = (u - 1);
+            int down = u + width;
+            //check UP neighbour
+            if (graph[u][0] == 1 && up >= 0){
+                if (color[up] == 0){
+                    color[up] = 1;
+                    parent[up] = u;
+                    queue.add(up);
+                }
+            }
+            //check RIGHT neighbour
+            if (graph[u][1] == 1 && (right % width) != 0){
+                if (color[right] == 0){
+                    color[right] = 1;
+                    parent[right] = u;
+                    queue.add(right);
+                }
+            }
+            //check DOWN neighbour
+            if (graph[u][2] == 1 && down <= graph.length){
+                if (color[down] == 0){
+                    color[down] = 1;
+                    parent[down] = u;
+                    queue.add(down);
+                }
+            }
+            //check LEFT neighbour
+            if (graph[u][3] == 1 && (left % width) != width - 1){
+                if (color[left] == 0){
+                    color[left] = 1;
+                    parent[left] = u;
+                    queue.add(left);
+                }
+            }
+        }
+        return parent;
     }
 }

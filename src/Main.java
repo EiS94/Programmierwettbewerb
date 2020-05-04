@@ -2,87 +2,56 @@ import Graph.*;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class Main {
 
     public static void main(String[] args) {
-        long startTime;
-        long endTime;
-        double endTime2;
-        double endTime3;
-        long totalTime;
+        long start;
+        long end;
+        double diff;
+        start = System.nanoTime();
+        System.out.println(tree(Samples.sample2));
+        end = System.nanoTime();
+        diff = (end - start) / 1000000000.0;
+        System.out.println(diff + "s");
 
-        int width = 32;
-        int heigth = 200;
-        int paths = 50;
-        startTime = System.nanoTime();
-        String sample = Samples.createSample(width,heigth,paths);
-        int pathlength = test(sample);
-        endTime2 = (System.nanoTime() - startTime)/1000000000.0;
+        start = System.nanoTime();
+        System.out.println(test(Samples.sample2));
+        end = System.nanoTime();
+        diff = (end - start) / 1000000000.0;
+        System.out.println(diff + "s");
+    }
 
-        startTime = System.nanoTime();
-        pathlength = testGraphBFS(sample);
-        endTime3 = (System.nanoTime() - startTime)/1000000000.0;
+    public static int tree(String input){
+        Tuple t = GraphTranslator.convertInputArray(input);
+        int pathlength = 0;
+        int[] tree = Breitensuche.returnTree(t.getWidth(), t.getGraph());
 
-        System.out.println("Höhe: " + heigth + ", Breite: " + width + ", Anzahl Pfade: " + paths);
-        System.out.println("Pfadlänge Array: " +  pathlength);
-        System.out.println("Pfadlänge Graph: " + pathlength);
-        System.out.println("Dauer Array: " + endTime2 + " s");
-        System.out.println("Dauer Graph: " + endTime3 + " s");
-
-        /*
-        startTime = System.nanoTime();
-        testNewBFS();
-        endTime   = System.nanoTime();
-        totalTime = endTime - startTime;
-        System.out.println("\n" + totalTime/1000000000.0 + "s");
-        */
-
-
-        /*long totalStartTime;
-        long totalEndTime;
-        long totalTotalTime;
-
-
-
-        long total = 0;
-        int trys = 1000;
-        totalStartTime = System.nanoTime();
-        for (int i = 0; i < trys; i++) {
-            startTime = System.nanoTime();
-            test(Samples.createSample5(10000));
-            endTime = System.nanoTime();
-            totalTime = endTime - startTime;
-            total += totalTime;
-            //System.out.println("\n" + totalTime / 1000000000.0 + "s");
-            //System.out.println(i);
+        for (int i = 0; i < t.getPath().length - 1; i++) {
+            LinkedList<Integer> parentsA = new LinkedList<>();
+            LinkedList<Integer> parentsB = new LinkedList<>();
+            int a = t.getPath()[i];
+            int b = t.getPath()[i + 1];
+            parentsA.add(a);
+            parentsB.add(b);
+            while (a != 0){
+                a = tree[a];
+                parentsA.add(a);
+            }
+            while (b != 0){
+                b = tree[b];
+                parentsB.add(b);
+            }
+            while(!parentsA.isEmpty() && !parentsB.isEmpty() && parentsA.getLast() == parentsB.getLast()){
+                parentsA.removeLast();
+                parentsB.removeLast();
+            }
+            pathlength += parentsA.size() + parentsB.size();
         }
-        total = total;
-        System.out.println("\naverage = " + (total / trys / 1000000000.0) + "s");
-
-        totalEndTime   = System.nanoTime();
-        totalTotalTime = totalEndTime - totalStartTime;
-        System.out.println("\ntotal time = " + totalTotalTime/1000000000.0 + "s");
 
 
-        total = 0;
-        trys = 1000;
-        totalStartTime = System.nanoTime();
-        for (int i = 0; i < trys; i++) {
-            startTime = System.nanoTime();
-            testGraphBFS(Samples.createSample5(10000));
-            endTime = System.nanoTime();
-            totalTime = endTime - startTime;
-            total += totalTime;
-            //System.out.println("\n" + totalTime / 1000000000.0 + "s");
-            //System.out.println(i);
-        }
-        total = total;
-        System.out.println("\naverage = " + (total / trys / 1000000000.0) + "s");
-
-        totalEndTime   = System.nanoTime();
-        totalTotalTime = totalEndTime - totalStartTime;
-        System.out.println("\ntotal time = " + totalTotalTime/1000000000.0 + "s");*/
+        return pathlength;
     }
 
     public static int test(String input) {
@@ -142,6 +111,15 @@ public class Main {
             pathlength += Breitensuche.findShortestPath(graph, path[i], path[i+1]);
         }
         return pathlength;
+    }
+
+
+    public static void printArray(int[] array){
+        System.out.print("[" + array[0]);
+        for (int i = 1; i < array.length; i++) {
+            System.out.print(", " + array[i]);
+        }
+        System.out.println("]");
     }
 
 }

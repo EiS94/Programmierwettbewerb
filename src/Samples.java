@@ -10,6 +10,17 @@ public class Samples {
             "1 1\n" +
             "2 1\n";
 
+    public static String sample1 = "2 6\n" +
+            " _ _ _ _ _ _ \n" +
+            "|  _ _ _ _ _|\n" +
+            "|_ _ _ _ _ _|\n" +
+            "5\n" +
+            "1 5\n" +
+            "1 1\n" +
+            "1 6\n" +
+            "1 1\n" +
+            "2 1";
+
     public static String sample2 = "5 5\n" +
             " _ _ _ _ _ \n" +
             "|_ _  |_  |\n" +
