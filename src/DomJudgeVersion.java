@@ -10,7 +10,7 @@ public class DomJudgeVersion {
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
         while(line != null){
-            inputBuilder.append(line);
+            inputBuilder.append(line + "\n");
             line = reader.readLine();
         }
         String input = inputBuilder.toString();
@@ -143,7 +143,7 @@ public class DomJudgeVersion {
                 b = parent[b];
                 parentsB.add(b);
             }
-            while(!parentsA.isEmpty() && !parentsB.isEmpty() && parentsA.getLast() == parentsB.getLast()){
+            while(!parentsA.isEmpty() && !parentsB.isEmpty() && parentsA.getLast().equals(parentsB.getLast())){
                 parentsA.removeLast();
                 parentsB.removeLast();
             }
