@@ -218,5 +218,6 @@ public class Samples {
 
     public static void main(String[] args) {
         System.out.println(createSnake(4,4,10));
+        System.out.println(9998990001l % (Math.pow(2, 32)));
     }
 }

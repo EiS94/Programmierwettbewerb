@@ -12,7 +12,7 @@ public class EulerOhneEuler {
 
     public static void main(String[] args) throws Exception {
         //start get Input
-        BufferedReader reader = new BufferedReader(new StringReader(Samples.createSnake(11,11,10001)));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
         while (line != null) {
@@ -164,15 +164,9 @@ public class EulerOhneEuler {
 
         //end BFS
 
-        //start Eulertour
-
-        findEuler(0);
-
-        //end Eulertour
-
         //start addingPaths
 
-        int pathlength = 0;
+        long pathlength = 0;
 
         //System.out.println(euler);
         int i = 0;
@@ -191,7 +185,7 @@ public class EulerOhneEuler {
 
             int aP = a;
             int bP = b;
-            int aBPath = 0;
+            long aBPath = 0;
             while (aP != bP) {
                 if (aP < bP) {
                     bP = parent[bP];
@@ -209,16 +203,5 @@ public class EulerOhneEuler {
         //output
         System.out.print(pathlength);
 
-    }
-
-
-    public static void findEuler(int vertex) {
-        for (int i = 0; i < children[vertex].length; i++) {
-            if (children[vertex][i] == 0) {
-                break;
-            } else {
-                findEuler(children[vertex][i]);
-            }
-        }
     }
 }
