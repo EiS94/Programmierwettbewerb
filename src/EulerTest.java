@@ -2,18 +2,15 @@
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.LinkedList;
 
 public class EulerTest {
 
 
-    public static LinkedList<Integer> euler;
-    public static int[][] children;
-
-
     public static void main(String[] args) throws Exception{
         //start get Input
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(new StringReader(Samples.sample2));
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
         while(line != null){
@@ -89,7 +86,8 @@ public class EulerTest {
         LinkedList<Integer> queue = new LinkedList<>();
         queue.add(0);
         parent[0] = -1;
-        children = new int[graph.length][3];
+        int[][] children = new int[graph.length][3];
+        int[] numberOfChildren = new int[graph.length];
         int[] graphToEuler = new int[graph.length];
         //int[] eulerToGraph = new int[graph.length];
         int newNameCounter = 1;
@@ -161,14 +159,29 @@ public class EulerTest {
                     ++newNameCounter;
                 }
             }
+            numberOfChildren[graphToEuler[u]] = childcounter;
         }
 
         //end BFS
 
         //start Eulertour
 
-        euler = new LinkedList<>();
-        findEuler(0);
+       LinkedList<Integer> euler = new LinkedList<>();
+
+        euler.add(0);
+        while(true){
+            int u = euler.getLast();
+            if (numberOfChildren[u] == 0){
+                if (u == 0){
+                    break;
+                }
+                euler.add(parent[u]);
+            }
+            else{
+                --numberOfChildren[u];
+                euler.add(children[u][numberOfChildren[u]]);
+            }
+        }
 
         //end Eulertour
 
@@ -247,19 +260,5 @@ public class EulerTest {
         //output
         System.out.print(pathlength);
 
-    }
-
-
-    public static void findEuler(int vertex){
-        euler.add(vertex);
-        for (int i = 0; i < children[vertex].length; i++) {
-            if (children[vertex][i] == 0){
-                break;
-            }
-            else{
-                findEuler(children[vertex][i]);
-                euler.add(vertex);
-            }
-        }
     }
 }

@@ -1,5 +1,4 @@
 
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -12,7 +11,7 @@ public class EulerOhneEuler {
 
     public static void main(String[] args) throws Exception {
         //start get Input
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(new StringReader(Samples.createSnake(1000,1000,10000)));
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
         while (line != null) {
@@ -174,6 +173,7 @@ public class EulerOhneEuler {
             int a = graphToEuler[path[i]];
             int b = graphToEuler[path[i + 1]];
             int reach = 1;
+
             for (int j = i + 2; j < path.length; j++) {
                 if (graphToEuler[path[j - 2]] == graphToEuler[path[j]]) {
                     ++reach;
