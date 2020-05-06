@@ -107,6 +107,7 @@ public class Samples {
             "15 16\n" +
             "11 1\n" +
             "13 9";
+    
 
     public static String createSample(int width, int heigth, int paths) {
         //first line, height and width
@@ -157,5 +158,65 @@ public class Samples {
         }
         System.out.println(sb.toString());
         return sb.toString();
+    }
+    
+    public static String createSnake(int width, int height, int pathlength){
+        StringBuilder builder = new StringBuilder(height + " " + width + "\n");
+        int maxX = height % 2 == 0 ? 1 : width;
+        //first line
+        for (int i = 0; i < width; i++) {
+            builder.append(" _");
+        }
+        builder.append(" \n");
+        for (int i = 0; i < (height -1) / 2; i++) {
+            builder.append(createLineRight(width));
+            builder.append(createLineLeft(width));
+        }
+        if (height % 2 == 0){
+            builder.append(createLineRight(width));
+        }
+        builder.append(createLine(width));
+        builder.append(pathlength).append("\n");
+        for (int i = 0; i < pathlength / 2; i++) {
+            builder.append("1 1\n").append(height).append(" ").append(maxX).append("\n");
+        }
+        if (pathlength % 2 != 0){
+            builder.append("1 1\n");
+        }
+        System.out.println(builder.toString());
+        return builder.toString();
+    }
+
+
+    private static String createLineRight(int width){
+        StringBuilder builder = new StringBuilder();
+        builder.append("|_");
+        for (int i = 0; i < width - 2; i++) {
+            builder.append(" _");
+        }
+        builder.append("  |\n");
+        return builder.toString();
+    }
+    private static String createLineLeft(int width){
+        StringBuilder builder = new StringBuilder();
+        builder.append("| ");
+        for (int i = 0; i < width - 1; i++) {
+            builder.append(" _");
+        }
+        builder.append("|\n");
+        return builder.toString();
+    }
+    private static String createLine(int width){
+        StringBuilder builder = new StringBuilder();
+        builder.append("|_");
+        for (int i = 0; i < width - 1; i++) {
+            builder.append(" _");
+        }
+        builder.append("|\n");
+        return builder.toString();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(createSnake(4,4,10));
     }
 }

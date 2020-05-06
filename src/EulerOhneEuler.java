@@ -10,12 +10,12 @@ public class EulerOhneEuler {
     public static int[][] children;
 
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         //start get Input
-        BufferedReader reader = new BufferedReader(new StringReader(Samples.sample1));
+        BufferedReader reader = new BufferedReader(new StringReader(Samples.createSnake(11,11,10001)));
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
-        while(line != null){
+        while (line != null) {
             inputBuilder.append(line + "\n");
             line = reader.readLine();
         }
@@ -71,10 +71,10 @@ public class EulerOhneEuler {
         int[] path = new int[Integer.parseInt(split[h + 2])];
 
         int counter = 0;
-        for (int i = h+3; i < split.length; i++) {
+        for (int i = h + 3; i < split.length; i++) {
             String[] s = split[i].split(" ");
             int width = Integer.parseInt(s[1]) - 1;
-            int height = Integer.parseInt(s[0]) -1;
+            int height = Integer.parseInt(s[0]) - 1;
             path[counter++] = width + (height * w);
         }
 
@@ -92,7 +92,7 @@ public class EulerOhneEuler {
         int[] graphToEuler = new int[graph.length];
         //int[] eulerToGraph = new int[graph.length];
         int newNameCounter = 1;
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             int u = queue.remove(0);
             int up = u - w;
             int right = (u + 1);
@@ -101,7 +101,7 @@ public class EulerOhneEuler {
             int childcounter = 0;
             int uTrans = graphToEuler[u];
             //check UP neighbour
-            if (graph[u][0] == 1 && up >= 0){
+            if (graph[u][0] == 1 && up >= 0) {
                 if (color[up] == 0) {
                     //standard BFS
                     color[up] = 1;
@@ -116,8 +116,8 @@ public class EulerOhneEuler {
                 }
             }
             //check RIGHT neighbour
-            if (graph[u][1] == 1 && (right % w) != 0){
-                if (color[right] == 0){
+            if (graph[u][1] == 1 && (right % w) != 0) {
+                if (color[right] == 0) {
                     //standard BFS
                     color[right] = 1;
                     queue.add(right);
@@ -131,8 +131,8 @@ public class EulerOhneEuler {
                 }
             }
             //check DOWN neighbour
-            if (graph[u][2] == 1 && down <= graph.length){
-                if (color[down] == 0){
+            if (graph[u][2] == 1 && down <= graph.length) {
+                if (color[down] == 0) {
                     //standard BFS
                     color[down] = 1;
                     queue.add(down);
@@ -146,8 +146,8 @@ public class EulerOhneEuler {
                 }
             }
             //check LEFT neighbour
-            if (graph[u][3] == 1 && (left % w) != w - 1){
-                if (color[left] == 0){
+            if (graph[u][3] == 1 && (left % w) != w - 1) {
+                if (color[left] == 0) {
                     //standard BFS
                     color[left] = 1;
                     queue.add(left);
@@ -175,21 +175,33 @@ public class EulerOhneEuler {
         int pathlength = 0;
 
         //System.out.println(euler);
-        for (int i = 0; i < path.length - 1; i++) {
+        int i = 0;
+        while (i < path.length - 1) {
             int a = graphToEuler[path[i]];
             int b = graphToEuler[path[i + 1]];
+            int reach = 1;
+            for (int j = i + 2; j < path.length; j++) {
+                if (graphToEuler[path[j - 2]] == graphToEuler[path[j]]) {
+                    ++reach;
+                }
+                else{
+                    break;
+                }
+            }
 
             int aP = a;
             int bP = b;
-            while(aP != bP){
-                if (aP < bP){
+            int aBPath = 0;
+            while (aP != bP) {
+                if (aP < bP) {
                     bP = parent[bP];
-                }
-                else{
+                } else {
                     aP = parent[aP];
                 }
-                ++pathlength;
+                ++aBPath;
             }
+            pathlength += (aBPath * reach);
+            i += reach;
         }
 
         //end addingPaths
@@ -200,12 +212,11 @@ public class EulerOhneEuler {
     }
 
 
-    public static void findEuler(int vertex){
+    public static void findEuler(int vertex) {
         for (int i = 0; i < children[vertex].length; i++) {
-            if (children[vertex][i] == 0){
+            if (children[vertex][i] == 0) {
                 break;
-            }
-            else{
+            } else {
                 findEuler(children[vertex][i]);
             }
         }
