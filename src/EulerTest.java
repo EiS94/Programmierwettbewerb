@@ -8,12 +8,12 @@ import java.util.LinkedList;
 public class EulerTest {
 
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         //start get Input
-        BufferedReader reader = new BufferedReader(new StringReader(Samples.sample2));
+        BufferedReader reader = new BufferedReader(new StringReader(Samples.sample7));
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
-        while(line != null){
+        while (line != null) {
             inputBuilder.append(line + "\n");
             line = reader.readLine();
         }
@@ -69,10 +69,10 @@ public class EulerTest {
         int[] path = new int[Integer.parseInt(split[h + 2])];
 
         int counter = 0;
-        for (int i = h+3; i < split.length; i++) {
+        for (int i = h + 3; i < split.length; i++) {
             String[] s = split[i].split(" ");
             int width = Integer.parseInt(s[1]) - 1;
-            int height = Integer.parseInt(s[0]) -1;
+            int height = Integer.parseInt(s[0]) - 1;
             path[counter++] = width + (height * w);
         }
 
@@ -91,7 +91,7 @@ public class EulerTest {
         int[] graphToEuler = new int[graph.length];
         //int[] eulerToGraph = new int[graph.length];
         int newNameCounter = 1;
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             int u = queue.remove(0);
             int up = u - w;
             int right = (u + 1);
@@ -100,7 +100,7 @@ public class EulerTest {
             int childcounter = 0;
             int uTrans = graphToEuler[u];
             //check UP neighbour
-            if (graph[u][0] == 1 && up >= 0){
+            if (graph[u][0] == 1 && up >= 0) {
                 if (color[up] == 0) {
                     //standard BFS
                     color[up] = 1;
@@ -115,8 +115,8 @@ public class EulerTest {
                 }
             }
             //check RIGHT neighbour
-            if (graph[u][1] == 1 && (right % w) != 0){
-                if (color[right] == 0){
+            if (graph[u][1] == 1 && (right % w) != 0) {
+                if (color[right] == 0) {
                     //standard BFS
                     color[right] = 1;
                     queue.add(right);
@@ -130,8 +130,8 @@ public class EulerTest {
                 }
             }
             //check DOWN neighbour
-            if (graph[u][2] == 1 && down <= graph.length){
-                if (color[down] == 0){
+            if (graph[u][2] == 1 && down <= graph.length) {
+                if (color[down] == 0) {
                     //standard BFS
                     color[down] = 1;
                     queue.add(down);
@@ -145,8 +145,8 @@ public class EulerTest {
                 }
             }
             //check LEFT neighbour
-            if (graph[u][3] == 1 && (left % w) != w - 1){
-                if (color[left] == 0){
+            if (graph[u][3] == 1 && (left % w) != w - 1) {
+                if (color[left] == 0) {
                     //standard BFS
                     color[left] = 1;
                     queue.add(left);
@@ -166,24 +166,51 @@ public class EulerTest {
 
         //start Eulertour
 
-       LinkedList<Integer> euler = new LinkedList<>();
+        LinkedList<Integer> euler = new LinkedList<>();
+        LinkedList<Integer> rmqEuler = new LinkedList<>();
+        int[] firstEncounter = new int[graph.length]; //Ein wilder Knoten taucht auf.......
 
         euler.add(0);
-        while(true){
+        rmqEuler.add(0);
+        firstEncounter[0] = 0;
+        int depth = 0;
+        while (true) {
             int u = euler.getLast();
-            if (numberOfChildren[u] == 0){
-                if (u == 0){
+            if (numberOfChildren[u] == 0) {
+                if (u == 0) {
                     break;
                 }
                 euler.add(parent[u]);
-            }
-            else{
+                --depth;
+            } else {
                 --numberOfChildren[u];
-                euler.add(children[u][numberOfChildren[u]]);
+                int nextChild = children[u][numberOfChildren[u]];
+                euler.add(nextChild);
+                firstEncounter[nextChild] = euler.size() - 1;
+                ++depth;
             }
+
+            rmqEuler.add(depth);
         }
 
         //end Eulertour
+
+        //start normal RMQ
+        LinkedList<LinkedList<Integer>> normalRMQ = new LinkedList<>();
+        normalRMQ.add(euler);
+        int times = euler.size()/2;
+        LinkedList<Integer> lastList = euler;
+        while (times > 1) {
+            LinkedList<Integer> newList = new LinkedList<>();
+
+            for (int i = 0; i < lastList.size() - 1; i++) {
+                newList.add(Math.min(lastList.get(i), lastList.get(i + 1)));
+            }
+
+            lastList = newList;
+            times >>= 1;
+        }
+        //end normal RMQ
 
         //start addingPaths
 
@@ -193,61 +220,41 @@ public class EulerTest {
         for (int i = 0; i < path.length - 1; i++) {
             int a = graphToEuler[path[i]];
             int b = graphToEuler[path[i + 1]];
+            int start = firstEncounter[a];
+            int end = firstEncounter[b];
 
-            //find A in euler
-            int firstA = 0;
-            for (int j = 0; j < euler.size(); j++) {
-                if (euler.get(j).equals(a)){
-                    firstA = j;
-                    break;
-                }
+            if (start > end){
+                int temp = end;
+                end = start;
+                start = temp;
             }
 
-            //find min between A and B
-            int min = a;
-            for (int j = firstA + 1; j < euler.size(); j++) {
-                if (euler.get(j) < min){
-                    min = euler.get(j);
-                }
-                if (euler.get(j).equals(b)){
-                    break;
-                }
+            //start RMQ Zugriff
+            int diff = end - start;
+            int halfDiff = diff / 2;
+            int logDiff = (int)(Math.log(diff) / Math.log(2));
+            int logStart = (int)(Math.log(start) / Math.log(2));
+            int logMitte = (int)(Math.log(end - halfDiff) / Math.log(2)) + 1;
+            int links = normalRMQ.get(logDiff).get(logStart);
+            int rechts = normalRMQ.get(logDiff).get(logMitte);
+
+
+            int min = links;
+            if (min > rechts){
+                min = rechts;
             }
 
-            //find B in euler
-            int firstB = 0;
-            for (int j = 0; j < euler.size(); j++) {
-                if (euler.get(j).equals(b)){
-                    firstB = j;
-                    break;
-                }
-            }
-
-            //find min between A and B
-            int tempmin = b;
-            for (int j = firstB + 1; j < euler.size(); j++) {
-                if (euler.get(j) < tempmin){
-                    tempmin = euler.get(j);
-                }
-                if (euler.get(j).equals(a)){
-                    break;
-                }
-            }
-
-            if (tempmin > min){
-                min = tempmin;
-            }
             int tempLength = 0;
             //min ist der lca
             int p = a;
-            while(min != p){
+            while (min != p) {
                 p = parent[p];
                 ++tempLength;
             }
 
             //min ist der lca
             p = b;
-            while(min != p){
+            while (min != p) {
                 p = parent[p];
                 ++tempLength;
             }
@@ -261,4 +268,14 @@ public class EulerTest {
         System.out.print(pathlength);
 
     }
+
+    public static int log(int a){
+        int log = 0;
+        while(a > 1) {
+            a >>= 1;
+            ++log;
+        }
+        return log;
+    }
+
 }
