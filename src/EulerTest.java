@@ -1,23 +1,13 @@
-
-
-import Graph.Inder;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
-
 public class EulerTest {
 
 
     public static void main(String[] args) throws Exception {
-        long startTime;
-        long endTime;
-        double diffTime;
         //start get Input
-        BufferedReader reader = new BufferedReader(new StringReader(Samples.sample2));
-        startTime = System.nanoTime();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
         while (line != null) {
@@ -84,10 +74,6 @@ public class EulerTest {
         }
 
         //end Translation
-        endTime = System.nanoTime();
-        diffTime = (endTime - startTime) / 1000000000.0;
-        System.out.println("Translator: " + diffTime);
-        startTime = System.nanoTime();
 
         //start BFS
 
@@ -175,16 +161,12 @@ public class EulerTest {
 
         //end BFS
 
-        endTime = System.nanoTime();
-        diffTime = (endTime - startTime) / 1000000000.0;
-        System.out.println("BFS: " + diffTime);
-        startTime = System.nanoTime();
-
         //start Eulertour
 
         LinkedList<Integer> euler = new LinkedList<>();
         LinkedList<Integer> rmqEuler = new LinkedList<>();
         int[] firstEncounter = new int[graph.length]; //Ein wilder Knoten taucht auf.......
+        int[] depthArray = new int[graph.length];
 
         euler.add(0);
         rmqEuler.add(0);
@@ -192,6 +174,7 @@ public class EulerTest {
         int depth = 0;
         while (true) {
             int u = euler.getLast();
+            depthArray[u] = depth;
             if (numberOfChildren[u] == 0) {
                 if (u == 0) {
                     break;
@@ -211,44 +194,16 @@ public class EulerTest {
 
         //end Eulertour
 
-        int[] array = euler.stream().mapToInt(i->i).toArray();
+        int[] eulerArray = euler.stream().mapToInt(i->i).toArray();
 
-        int[][] sparce = Inder.buildSparseTable(array, array.length);
 
-        int lca = Inder.query(12,39,sparce);
+        //build sparce table
+        int[][] sparce = preprocess(eulerArray);
 
-        endTime = System.nanoTime();
-        diffTime = (endTime - startTime) / 1000000000.0;
-        System.out.println("Eulertour: " + diffTime);
-        startTime = System.nanoTime();
-
-        //start normal RMQ
-        LinkedList<int[]> normalRMQ = new LinkedList<>();
-        normalRMQ.add(new int[euler.size()]);
-        for (int i = 0; i < euler.size(); i++) {
-            normalRMQ.get(0)[i] = euler.get(i);
-        }
-        int[] lastArray = normalRMQ.getLast();
-        for (int i = 1; i < euler.size(); i++) {
-            int nextSize = euler.size() - i;
-            int[] nextArray = new int[nextSize];
-            for (int j = 0; j < nextSize; j++) {
-                nextArray[j] = Math.min(lastArray[j], lastArray[j + 1]);
-            }
-            normalRMQ.add(nextArray);
-            lastArray = nextArray;
-        }
-        printRMQListArray(normalRMQ);
-        //end normal RMQ
-
-        endTime = System.nanoTime();
-        diffTime = (endTime - startTime) / 1000000000.0;
-        System.out.println("RMQ: " + diffTime);
-        startTime = System.nanoTime();
 
         //start addingPaths
 
-        int pathlength = 0;
+        long pathlength = 0;
 
         //System.out.println(euler);
         for (int i = 0; i < path.length - 1; i++) {
@@ -264,28 +219,10 @@ public class EulerTest {
                 start = temp;
             }
 
-
-            //start RMQ Zugriff
-            int diff = end - start;
-            /*
-            int halfDiff = (diff + 1) / 2;
-            int logDiff = getLog(diff);
-            int logStart = getLog(start);
-            int logMitte = getLog(end - halfDiff) + 1;
-            int links = normalRMQ.get(diff).get(logStart);
-            int rechts = normalRMQ.get(diff).get(logMitte);
-
-
-            int min = links;
-            if (min > rechts) {
-                min = rechts;
-            }
-
-             */
-            int min = normalRMQ.get(diff)[start];
+            int min = rangeMinimumQuery(start, end, eulerArray, sparce);
             int tempLength = 0;
             //min ist der lca
-            int p = a;
+            /*int p = a;
             while (min != p) {
                 p = parent[p];
                 ++tempLength;
@@ -296,73 +233,58 @@ public class EulerTest {
             while (min != p) {
                 p = parent[p];
                 ++tempLength;
-            }
-            //System.out.println("Pfad " + a + "->" + b + " lca(" + min + "): " + tempLength);
-            pathlength += tempLength;
+            }*/
+
+            pathlength += depthArray[a] + depthArray[b] - (2 * depthArray[min]);
+            //System.out.println("Pfad " + a + "->" + b + " lca(" + min + "): " + result);
         }
 
         //end addingPaths
 
-        endTime = System.nanoTime();
-        diffTime = (endTime - startTime) / 1000000000.0;
-        System.out.println("Pfad: " + diffTime);
-        startTime = System.nanoTime();
 
         //output
         System.out.print(pathlength);
 
     }
 
-    public static int getLog(int a) {
-        int log = 0;
-        while (a > 1) {
-            a >>= 1;
-            ++log;
+    public static int[][] preprocess(int[] input) {
+        int n = input.length;
+        int[][] sparse = new int[n][log2(n) + 1];
+        for (int i = 0; i < input.length; i++) {
+            sparse[i][0] = i;
         }
-        return log;
-    }
 
-    public static void printRMQListList(LinkedList<LinkedList<Integer>> rmq) {
-        for (int i = 0; i < rmq.size(); i++) {
-            System.out.print(i + ":");
-            for (int j = 0; j < i; j++) {
-                System.out.print("  ");
-            }
-            System.out.print("[");
-            for (int j = 0; j < rmq.get(i).size() - 1; j++) {
-                if (rmq.get(i).get(j) < 10){
-                    System.out.print(" ");
+        for (int j = 1; 1 << j <= n; j++) {
+            for (int i = 0; i + (1 << j) - 1 < n; i++) {
+                if (input[sparse[i][j - 1]] < input[sparse[i + (1 << (j - 1))][j - 1]]) {
+                    sparse[i][j] = sparse[i][j - 1];
+                } else {
+                    sparse[i][j] = sparse[i + (1 << (j - 1))][j - 1];
                 }
-                System.out.print(rmq.get(i).get(j) + ", ");
             }
-            if (rmq.get(i).getLast() < 10){
-                System.out.print(" ");
-            }
-            System.out.print(rmq.get(i).getLast());
-            System.out.println("]");
+        }
+        return sparse;
+    }
+
+    public static int rangeMinimumQuery(int low, int high, int[] input, int[][] sparse) {
+        if (low > high) {
+            int temp = low;
+            low = high;
+            high = temp;
+        }
+        int l = high - low + 1;
+        int k = log2(l);
+        if (input[sparse[low][k]] <= input[sparse[low + l - (1 << k)][k]]) {
+            return input[sparse[low][k]];
+        } else {
+            return input[sparse[high - (1 << k) + 1][k]];
         }
     }
 
-    public static void printRMQListArray(LinkedList<int[]> rmq) {
-        for (int i = 0; i < rmq.size(); i++) {
-            System.out.print(i + ":");
-            for (int j = 0; j < i; j++) {
-                System.out.print("  ");
-            }
-            System.out.print("[");
-            for (int j = 0; j < rmq.get(i).length - 1; j++) {
-                if (rmq.get(i)[j] < 10){
-                    System.out.print(" ");
-                }
-                System.out.print(rmq.get(i)[j] + ", ");
-            }
-            if (rmq.get(i)[rmq.get(i).length - 1] < 10){
-                System.out.print(" ");
-            }
-            System.out.print(rmq.get(i)[rmq.get(i).length - 1]);
-            System.out.println("]");
-        }
+    private static int log2(int n) {
+        if (n <= 0) throw new IllegalArgumentException();
+        return 31 - Integer.numberOfLeadingZeros(n);
     }
-
 
 }
+

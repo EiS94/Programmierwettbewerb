@@ -3,7 +3,7 @@ package Graph;
 public class Inder {
 
 
-
+/*
     public static int[][] preprocess(int[] input) {
         int n = input.length;
         int[][] sparse = new int[n][log2(n) + 1];
@@ -76,7 +76,6 @@ public class Inder {
     // Returns minimum of arr[L..R]
     public static int query(int L, int R, int[][] lookup)
     {
-
         // Find highest power of 2 that is smaller
         // than or equal to count of elements in given
         // range. For [2, 10], j = 3
@@ -92,6 +91,6 @@ public class Inder {
         else
             return lookup[R - (1 << j) + 1][j];
     }
-
+*/
 
 }
