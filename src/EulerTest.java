@@ -1,5 +1,7 @@
 
 
+import Graph.Inder;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -14,7 +16,7 @@ public class EulerTest {
         long endTime;
         double diffTime;
         //start get Input
-        BufferedReader reader = new BufferedReader(new StringReader(Samples.createSnake(1000,100,10000)));
+        BufferedReader reader = new BufferedReader(new StringReader(Samples.sample2));
         startTime = System.nanoTime();
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
@@ -209,6 +211,12 @@ public class EulerTest {
 
         //end Eulertour
 
+        int[] array = euler.stream().mapToInt(i->i).toArray();
+
+        int[][] sparce = Inder.buildSparseTable(array, array.length);
+
+        int lca = Inder.query(19,21,sparce);
+
         endTime = System.nanoTime();
         diffTime = (endTime - startTime) / 1000000000.0;
         System.out.println("Eulertour: " + diffTime);
@@ -230,7 +238,7 @@ public class EulerTest {
             normalRMQ.add(nextArray);
             lastArray = nextArray;
         }
-        //printRMQListArray(normalRMQ);
+        printRMQListArray(normalRMQ);
         //end normal RMQ
 
         endTime = System.nanoTime();
@@ -355,4 +363,6 @@ public class EulerTest {
             System.out.println("]");
         }
     }
+
+
 }
