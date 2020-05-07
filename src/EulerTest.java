@@ -3,14 +3,19 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class EulerTest {
 
 
     public static void main(String[] args) throws Exception {
+        long startTime;
+        long endTime;
+        double diffTime;
         //start get Input
-        BufferedReader reader = new BufferedReader(new StringReader(Samples.sample7));
+        BufferedReader reader = new BufferedReader(new StringReader(Samples.createSnake(1000,100,10000)));
+        startTime = System.nanoTime();
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
         while (line != null) {
@@ -77,6 +82,10 @@ public class EulerTest {
         }
 
         //end Translation
+        endTime = System.nanoTime();
+        diffTime = (endTime - startTime) / 1000000000.0;
+        System.out.println("Translator: " + diffTime);
+        startTime = System.nanoTime();
 
         //start BFS
 
@@ -164,6 +173,11 @@ public class EulerTest {
 
         //end BFS
 
+        endTime = System.nanoTime();
+        diffTime = (endTime - startTime) / 1000000000.0;
+        System.out.println("BFS: " + diffTime);
+        startTime = System.nanoTime();
+
         //start Eulertour
 
         LinkedList<Integer> euler = new LinkedList<>();
@@ -195,22 +209,34 @@ public class EulerTest {
 
         //end Eulertour
 
+        endTime = System.nanoTime();
+        diffTime = (endTime - startTime) / 1000000000.0;
+        System.out.println("Eulertour: " + diffTime);
+        startTime = System.nanoTime();
+
         //start normal RMQ
-        LinkedList<LinkedList<Integer>> normalRMQ = new LinkedList<>();
-        normalRMQ.add(euler);
-        int times = euler.size()/2;
-        LinkedList<Integer> lastList = euler;
-        while (times > 1) {
-            LinkedList<Integer> newList = new LinkedList<>();
-
-            for (int i = 0; i < lastList.size() - 1; i++) {
-                newList.add(Math.min(lastList.get(i), lastList.get(i + 1)));
-            }
-
-            lastList = newList;
-            times >>= 1;
+        LinkedList<int[]> normalRMQ = new LinkedList<>();
+        normalRMQ.add(new int[euler.size()]);
+        for (int i = 0; i < euler.size(); i++) {
+            normalRMQ.get(0)[i] = euler.get(i);
         }
+        int[] lastArray = normalRMQ.getLast();
+        for (int i = 1; i < euler.size(); i++) {
+            int nextSize = euler.size() - i;
+            int[] nextArray = new int[nextSize];
+            for (int j = 0; j < nextSize; j++) {
+                nextArray[j] = Math.min(lastArray[j], lastArray[j + 1]);
+            }
+            normalRMQ.add(nextArray);
+            lastArray = nextArray;
+        }
+        //printRMQListArray(normalRMQ);
         //end normal RMQ
+
+        endTime = System.nanoTime();
+        diffTime = (endTime - startTime) / 1000000000.0;
+        System.out.println("RMQ: " + diffTime);
+        startTime = System.nanoTime();
 
         //start addingPaths
 
@@ -218,32 +244,37 @@ public class EulerTest {
 
         //System.out.println(euler);
         for (int i = 0; i < path.length - 1; i++) {
+            //System.out.println("path " + i + "->" + (i + 1));
             int a = graphToEuler[path[i]];
             int b = graphToEuler[path[i + 1]];
             int start = firstEncounter[a];
             int end = firstEncounter[b];
 
-            if (start > end){
+            if (start > end) {
                 int temp = end;
                 end = start;
                 start = temp;
             }
 
+
             //start RMQ Zugriff
             int diff = end - start;
-            int halfDiff = diff / 2;
-            int logDiff = (int)(Math.log(diff) / Math.log(2));
-            int logStart = (int)(Math.log(start) / Math.log(2));
-            int logMitte = (int)(Math.log(end - halfDiff) / Math.log(2)) + 1;
-            int links = normalRMQ.get(logDiff).get(logStart);
-            int rechts = normalRMQ.get(logDiff).get(logMitte);
+            /*
+            int halfDiff = (diff + 1) / 2;
+            int logDiff = getLog(diff);
+            int logStart = getLog(start);
+            int logMitte = getLog(end - halfDiff) + 1;
+            int links = normalRMQ.get(diff).get(logStart);
+            int rechts = normalRMQ.get(diff).get(logMitte);
 
 
             int min = links;
-            if (min > rechts){
+            if (min > rechts) {
                 min = rechts;
             }
 
+             */
+            int min = normalRMQ.get(diff)[start];
             int tempLength = 0;
             //min ist der lca
             int p = a;
@@ -264,18 +295,64 @@ public class EulerTest {
 
         //end addingPaths
 
+        endTime = System.nanoTime();
+        diffTime = (endTime - startTime) / 1000000000.0;
+        System.out.println("Pfad: " + diffTime);
+        startTime = System.nanoTime();
+
         //output
         System.out.print(pathlength);
 
     }
 
-    public static int log(int a){
+    public static int getLog(int a) {
         int log = 0;
-        while(a > 1) {
+        while (a > 1) {
             a >>= 1;
             ++log;
         }
         return log;
     }
 
+    public static void printRMQListList(LinkedList<LinkedList<Integer>> rmq) {
+        for (int i = 0; i < rmq.size(); i++) {
+            System.out.print(i + ":");
+            for (int j = 0; j < i; j++) {
+                System.out.print("  ");
+            }
+            System.out.print("[");
+            for (int j = 0; j < rmq.get(i).size() - 1; j++) {
+                if (rmq.get(i).get(j) < 10){
+                    System.out.print(" ");
+                }
+                System.out.print(rmq.get(i).get(j) + ", ");
+            }
+            if (rmq.get(i).getLast() < 10){
+                System.out.print(" ");
+            }
+            System.out.print(rmq.get(i).getLast());
+            System.out.println("]");
+        }
+    }
+
+    public static void printRMQListArray(LinkedList<int[]> rmq) {
+        for (int i = 0; i < rmq.size(); i++) {
+            System.out.print(i + ":");
+            for (int j = 0; j < i; j++) {
+                System.out.print("  ");
+            }
+            System.out.print("[");
+            for (int j = 0; j < rmq.get(i).length - 1; j++) {
+                if (rmq.get(i)[j] < 10){
+                    System.out.print(" ");
+                }
+                System.out.print(rmq.get(i)[j] + ", ");
+            }
+            if (rmq.get(i)[rmq.get(i).length - 1] < 10){
+                System.out.print(" ");
+            }
+            System.out.print(rmq.get(i)[rmq.get(i).length - 1]);
+            System.out.println("]");
+        }
+    }
 }

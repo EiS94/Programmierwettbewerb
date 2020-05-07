@@ -183,7 +183,7 @@ public class Samples {
         if (pathlength % 2 != 0){
             builder.append("1 1\n");
         }
-        System.out.println(builder.toString());
+        //System.out.println(builder.toString());
         return builder.toString();
     }
 
