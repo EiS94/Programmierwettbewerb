@@ -215,7 +215,7 @@ public class EulerTest {
 
         int[][] sparce = Inder.buildSparseTable(array, array.length);
 
-        int lca = Inder.query(19,21,sparce);
+        int lca = Inder.query(12,39,sparce);
 
         endTime = System.nanoTime();
         diffTime = (endTime - startTime) / 1000000000.0;
