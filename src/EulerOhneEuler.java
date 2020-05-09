@@ -11,7 +11,7 @@ public class EulerOhneEuler {
 
     public static void main(String[] args) throws Exception {
         //start get Input
-        BufferedReader reader = new BufferedReader(new StringReader(Samples.sample7));
+        BufferedReader reader = new BufferedReader(new StringReader(Samples.createSnake(11,11,10001)));
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
         while (line != null) {

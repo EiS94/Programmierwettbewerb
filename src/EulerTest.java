@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.LinkedList;
@@ -7,7 +8,7 @@ public class EulerTest {
 
     public static void main(String[] args) throws Exception {
         //start get Input
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(new FileReader(Samples.createLabyrinth(1000,1000,10000)));
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
         while (line != null) {
