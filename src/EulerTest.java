@@ -7,7 +7,7 @@ public class EulerTest {
 
     public static void main(String[] args) throws Exception {
         //start get Input
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(new StringReader(Samples.sample4));
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
         while (line != null) {
