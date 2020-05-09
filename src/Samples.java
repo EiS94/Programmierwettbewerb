@@ -113,7 +113,7 @@ public class Samples {
             "15 16\n" +
             "11 1\n" +
             "13 9";
-    
+
 
     public static String createSample(int width, int heigth, int paths) {
         //first line, height and width
@@ -154,7 +154,7 @@ public class Samples {
         for (int i = 0; i < paths; i++) {
             int x = rd.nextInt(width) + 1;
             int y = rd.nextInt(heigth) + 1;
-            while (x == lastX && y == lastY ) {
+            while (x == lastX && y == lastY) {
                 x = rd.nextInt(width) + 1;
                 y = rd.nextInt(heigth) + 1;
             }
@@ -165,36 +165,48 @@ public class Samples {
         System.out.println(sb.toString());
         return sb.toString();
     }
-    
-    public static String createSnake(int width, int height, int pathlength){
-        StringBuilder builder = new StringBuilder(height + " " + width + "\n");
+
+    public static String createSnake(int width, int height, int pathlength) throws Exception {
+        String filepath = "C:\\Users\\Benedikt\\Desktop\\UNI\\Informatik\\6.Semester\\Seminar Prog\\Prog\\seminarprogproblemc\\samples\\generatedSnake.txt";
+        File file = new File(filepath);
+        if (file.exists()) {
+            file.delete();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, true));
+        writer.write(height + " " + width + "\n");
         int maxX = height % 2 == 0 ? 1 : width;
         //first line
         for (int i = 0; i < width; i++) {
-            builder.append(" _");
+            writer.append(" _");
         }
-        builder.append(" \n");
-        for (int i = 0; i < (height -1) / 2; i++) {
-            builder.append(createLineRight(width));
-            builder.append(createLineLeft(width));
+        writer.append(" \n");
+        for (int i = 0; i < (height - 1) / 2; i++) {
+            writer.append(createLineRight(width));
+            writer.append(createLineLeft(width));
         }
-        if (height % 2 == 0){
-            builder.append(createLineRight(width));
+        if (height % 2 == 0) {
+            writer.append(createLineRight(width));
         }
-        builder.append(createLine(width));
-        builder.append(pathlength).append("\n");
+        writer.append(createLine(width));
+        writer.append(pathlength + "").append("\n");
         for (int i = 0; i < pathlength / 2; i++) {
-            builder.append("1 1\n").append(height).append(" ").append(maxX).append("\n");
+            writer.append("1 1\n").append(height + "").append(" ").append(maxX + "").append("\n");
         }
-        if (pathlength % 2 != 0){
-            builder.append("1 1\n");
+        if (pathlength % 2 != 0) {
+            writer.append("1 1\n");
         }
         //System.out.println(builder.toString());
-        return builder.toString();
+        writer.close();
+        return filepath;
     }
 
 
-    private static String createLineRight(int width){
+    private static String createLineRight(int width) {
         StringBuilder builder = new StringBuilder();
         builder.append("|_");
         for (int i = 0; i < width - 2; i++) {
@@ -203,7 +215,8 @@ public class Samples {
         builder.append("  |\n");
         return builder.toString();
     }
-    private static String createLineLeft(int width){
+
+    private static String createLineLeft(int width) {
         StringBuilder builder = new StringBuilder();
         builder.append("| ");
         for (int i = 0; i < width - 1; i++) {
@@ -212,7 +225,8 @@ public class Samples {
         builder.append("|\n");
         return builder.toString();
     }
-    private static String createLine(int width){
+
+    private static String createLine(int width) {
         StringBuilder builder = new StringBuilder();
         builder.append("|_");
         for (int i = 0; i < width - 1; i++) {
@@ -222,7 +236,7 @@ public class Samples {
         return builder.toString();
     }
 
-    public static String createLabyrinth(int width, int height, int pathlength) throws Exception {
+    public static String createLabyrinth(int width, int height, int pathlength, boolean maxWay) throws Exception {
         int length = width * height;
         int[][] graph = new int[length][2]; //1==right 0==down 0==wall, 1==nowall
         //Black == 1 == has parent can't be picked as a child,
@@ -233,17 +247,16 @@ public class Samples {
         parent[0] = 0;
         color[0] = 1;
         LinkedList<Integer> queue = new LinkedList<>();
-        while(true) {
+        while (true) {
             boolean allblack = true;
             for (int i = 0; i < color.length; i++) {
-                if (color[i] == 0){
+                if (color[i] == 0) {
                     allblack = false;
-                }
-                else{
+                } else {
                     queue.add(i);
                 }
             }
-            if (allblack){
+            if (allblack) {
                 break;
             }
             while (!queue.isEmpty()) {
@@ -303,7 +316,7 @@ public class Samples {
         }
         String filepath = "C:\\Users\\Benedikt\\Desktop\\UNI\\Informatik\\6.Semester\\Seminar Prog\\Prog\\seminarprogproblemc\\samples\\generatedSample.txt";
         File file = new File(filepath);
-        if(file.exists()){
+        if (file.exists()) {
             file.delete();
             try {
                 file.createNewFile();
@@ -318,30 +331,39 @@ public class Samples {
         }
         writer.append("\n");
         for (int i = 0; i < length; i++) {
-            if (i % width == 0){
+            if (i % width == 0) {
                 writer.append("|");
             }
-            if (graph[i][0] == 1){
+            if (graph[i][0] == 1) {
                 writer.append(" ");
-            }
-            else{
+            } else {
                 writer.append("_");
             }
-            if (graph[i][1] == 1){
+            if (graph[i][1] == 1) {
                 writer.append(" ");
-            }
-            else{
+            } else {
                 writer.append("|");
             }
-            if (i % width == width - 1){
+            if (i % width == width - 1) {
                 writer.append("\n");
             }
         }
         writer.append(pathlength + "");
-        for (int i = 0; i < pathlength; i++) {
-            int y = (int)(Math.random() * height) + 1;
-            int x = (int)(Math.random() * width) + 1;
-            writer.append("\n" + y + " " + x);
+        if (maxWay) {
+            for (int i = 0; i < pathlength/2; i++) {
+                writer.append("\n" + 1 + " " + 1);
+                writer.append("\n" + (height) + " " + (width));
+            }
+            if (pathlength % 2 == 1){
+                writer.append("\n" + 1 + " " + 1);
+            }
+        }
+        else {
+            for (int i = 0; i < pathlength; i++) {
+                int y = (int) (Math.random() * height) + 1;
+                int x = (int) (Math.random() * width) + 1;
+                writer.append("\n" + y + " " + x);
+            }
         }
         writer.close();
         return filepath;
