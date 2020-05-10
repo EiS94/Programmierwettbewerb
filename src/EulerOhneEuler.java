@@ -75,7 +75,8 @@ public class EulerOhneEuler {
             String[] s = split[i].split(" ");
             int width = Integer.parseInt(s[1]) - 1;
             int height = Integer.parseInt(s[0]) - 1;
-            path[counter++] = width + (height * w);
+            path[counter] = width + (height * w);
+            ++counter;
         }
 
         //end Translation

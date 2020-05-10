@@ -177,7 +177,7 @@ public class Samples {
                 e.printStackTrace();
             }
         }
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, true));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(filepath));
         writer.write(height + " " + width + "\n");
         int maxX = height % 2 == 0 ? 1 : width;
         //first line
@@ -324,7 +324,7 @@ public class Samples {
                 e.printStackTrace();
             }
         }
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, true));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(filepath));
         writer.write(height + " " + width + "\n ");
         for (int i = 0; i < width; i++) {
             writer.append("_ ");
