@@ -1,7 +1,6 @@
-package Graph;
+package ProblemC.Graph;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Objects;
 
 public class Node {

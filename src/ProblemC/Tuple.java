@@ -1,3 +1,5 @@
+package ProblemC;
+
 public class Tuple {
 
     private int[][] graph;

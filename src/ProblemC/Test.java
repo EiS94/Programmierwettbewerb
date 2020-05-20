@@ -1,3 +1,5 @@
+package ProblemC;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -8,7 +10,7 @@ public class Test {
 
 
     public static void main(String[] args) throws Exception {
-        String filePath = "C:\\Users\\Benedikt\\Desktop\\UNI\\Informatik\\6.Semester\\Seminar Prog\\Prog\\seminarprogproblemc\\Test\\";
+        String filePath = "C:\\Users\\Benedikt\\Desktop\\UNI\\Informatik\\6.Semester\\Seminar Prog\\Prog\\seminarprogproblemc\\ProblemC.Test\\";
         String pathlengthTestEOE = filePath + "pathlengthTestEOE.csv";
         String pathlengthTestET = filePath + "pathlengthTestET.csv";
 

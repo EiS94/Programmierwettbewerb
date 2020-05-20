@@ -1,4 +1,4 @@
-package Graph;
+package ProblemC.Graph;
 
 import java.util.HashSet;
 import java.util.Objects;

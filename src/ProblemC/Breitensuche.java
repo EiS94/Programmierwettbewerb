@@ -1,4 +1,6 @@
-import Graph.*;
+package ProblemC;
+
+import ProblemC.Graph.*;
 
 
 import java.util.LinkedList;

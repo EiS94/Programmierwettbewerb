@@ -1,4 +1,4 @@
-package Graph;
+package ProblemC.Graph;
 
 public class Inder {
 

@@ -1,10 +1,10 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+package ProblemC;
 
-import Graph.Graph;
-import Graph.Node;
-import Graph.Edge;
+import java.util.HashSet;
+
+import ProblemC.Graph.Graph;
+import ProblemC.Graph.Node;
+import ProblemC.Graph.Edge;
 
 public class GraphTranslator {
 
@@ -181,7 +181,7 @@ public class GraphTranslator {
         }
 
         Double end = (System.nanoTime() - start)/1000000000.0;
-        System.out.println("Translator-Zeit Graph: " + end + " s");
+        System.out.println("Translator-Zeit ProblemC.Graph: " + end + " s");
 
         return new Graph(path, nodes, edges);
     }
