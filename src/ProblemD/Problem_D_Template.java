@@ -1,7 +1,9 @@
 package ProblemD;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,28 +11,29 @@ import java.util.Optional;
 
 public class Problem_D_Template {
     //    Debugging helper
-//    public static void main(String[] args) throws Exception{
-//        int should = 10;
-//        for (int i = 0; i < 9; i++) {
-//            String input = Paths.get("input","generated","input"+i+".txt").toString();
-//            test(i,should,problemD(input));
-//        }
-//    }
-//
-//    public static void test(int index, int should, int is){
-//        if (is == should){
-//            System.out.println("Test "+index+" was successful with value: " + is + ".");
-//        } else {
-//            System.out.println("Test "+index+" was not successful was: " + is + " should be " + should+".");
-//        }
-//    }
-//    Change signature if you want to use the debugging helper methods
-//    public static int problemD(String input) throws Exception{
-    public static void main(String[] args) throws Exception {//int problemD(String input) throws Exception{//
-        // DEBUG: long startTime = System.currentTimeMillis();
-        // BufferedReader br = new BufferedReader(new FileReader(input);
-        // Reading in n and m
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) throws Exception {
+        int should = 10;
+        for (int i = 0; i < 9; i++) {
+            String input = Paths.get("input", "generated", "input" + i + ".txt").toString();
+            test(i, should, problemD(input));
+        }
+    }
+
+    public static void test(int index, int should, int is) {
+        if (is == should) {
+            System.out.println("Test " + index + " was successful with value: " + is + ".");
+        } else {
+            System.out.println("Test " + index + " was not successful was: " + is + " should be " + should + ".");
+        }
+    }
+
+    //    Change signature if you want to use the debugging helper methods
+    public static int problemD(String input) throws Exception {
+        //public static void main(String[] args) throws Exception {
+        long startTime = System.currentTimeMillis();
+        BufferedReader br = new BufferedReader(new FileReader(input));
+        //Reading in n and m
+        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine()); // number of cities
         int m = Integer.parseInt(br.readLine()); // number of roads
 
@@ -70,8 +73,8 @@ public class Problem_D_Template {
             edges[j][1] = new Edge(j, secondCity, 1, false);
 
             // TODO store which roads connect to a city in citiesToRoads (to create residual Edges from cities to roads)
-            citiesToRoads.get(firstCity).add(secondCity);
-            citiesToRoads.get(secondCity).add(firstCity);
+            citiesToRoads.get(firstCity).add(j);
+            citiesToRoads.get(secondCity).add(j);
         }
         br.close();
 
@@ -113,13 +116,13 @@ public class Problem_D_Template {
             }
             graph.resetFlow();
         }
-        System.out.println(high);
+        //System.out.println(high);
         // Debugging help (your algorithm should be able to run in under ~2s)
-//        long stopTime = System.currentTimeMillis();
-//        long elapsedTime = stopTime - startTime;
-//        double elapsedSeconds = (double)elapsedTime / 1000;
-//        System.out.println("The Algorithm took " + (elapsedSeconds) + (" seconds."));
-//        return low;
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        double elapsedSeconds = (double) elapsedTime / 1000;
+        System.out.println("The Algorithm took " + (elapsedSeconds) + (" seconds."));
+        return low;
     }
 
     public static int edmondsKarp(Graph rGraph) {
@@ -133,10 +136,26 @@ public class Problem_D_Template {
         while (parentOptional.isPresent()) {
             Edge[] parent = parentOptional.get();
             // TODO find minFlow in s,t-path stored in the parent array
+            int currentNode = sink;
+            int minFlow = parent[sink].getRemainingCapacity();
+            while (currentNode != source) {
+                int tempFlow = parent[currentNode].getRemainingCapacity();
+                if (tempFlow < minFlow) {
+                    minFlow = tempFlow;
+                }
+                currentNode = parent[currentNode].getStart();
+            }
             // TODO Update edges and residualEdges with minFlow of the path
-
+            currentNode = sink;
+            while (currentNode != source) {
+                parent[currentNode].updateFlow(minFlow);
+                currentNode = parent[currentNode].getStart();
+            }
 
             parentOptional = bfs(rGraph);
+        }
+        for (Edge edge : rGraph.getEdges()[source]) {
+            maxFlow += edge.flow;
         }
         return maxFlow;
     }
@@ -152,10 +171,12 @@ public class Problem_D_Template {
         while (!queue.isEmpty()) {
             int u = queue.removeFirst();
             for (Edge edge : graph.getEdges()[u]) {
-                int dest = edge.getDest();
-                if (visited[dest]) {
-                    parent[dest] = edge;
-                    queue.add(dest);
+                if (edge.getRemainingCapacity() > 0) {
+                    int dest = edge.getDest();
+                    if (!visited[dest]) {
+                        parent[dest] = edge;
+                        queue.add(dest);
+                    }
                 }
             }
             visited[u] = true;
@@ -205,8 +226,12 @@ public class Problem_D_Template {
             this.capacity = capacity;
         }
 
-        public void addToFlow(int diff) {
-            this.flow += diff;
+        public void updateFlow(int diff) {
+            if (res) {
+                this.flow -= diff;
+            } else {
+                this.flow += diff;
+            }
         }
 
     }
