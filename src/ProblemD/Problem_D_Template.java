@@ -136,11 +136,13 @@ public class Problem_D_Template {
 
         // TODO find s,t-path
         //Bene: nicht sicher, ob die BFS richtig ist
+        int count = 0;
         Optional<Edge[]> parentOptional = bfs(rGraph);
         while (parentOptional.isPresent()) {
             Edge[] parent = parentOptional.get();
             // TODO find minFlow in s,t-path stored in the parent array
             int currentNode = sink;
+            /*
             int minFlow = parent[sink].getRemainingCapacity();
             while (currentNode != source) {
                 int tempFlow = parent[currentNode].getRemainingCapacity();
@@ -148,16 +150,18 @@ public class Problem_D_Template {
                     minFlow = tempFlow;
                 }
                 currentNode = parent[currentNode].getStart();
-            }
+            }*/
             // TODO Update edges and residualEdges with minFlow of the path
             currentNode = sink;
             while (currentNode != source) {
-                parent[currentNode].updateFlow(minFlow);
+                parent[currentNode].updateFlow();
                 currentNode = parent[currentNode].getStart();
             }
-            maxFlow += minFlow;
+            ++maxFlow;
             parentOptional = bfs(rGraph);
+            ++count;
         }
+        System.out.println("BFS: " + count);
         /*
         for (Edge edge : rGraph.getEdges()[source]) {
             maxFlow += edge.flow;
@@ -240,11 +244,11 @@ public class Problem_D_Template {
             this.capacity = capacity;
         }
 
-        public void updateFlow(int diff) {
+        public void updateFlow() {
             if (res) {
-                this.flow -= diff;
+                --this.flow;
             } else {
-                this.flow += diff;
+                ++this.flow;
             }
         }
 
