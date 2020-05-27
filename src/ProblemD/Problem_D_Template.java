@@ -11,10 +11,11 @@ import java.util.Optional;
 
 public class Problem_D_Template {
     //    Debugging helper
+    /*
     public static void main(String[] args) throws Exception {
         int should = 10;
         for (int i = 0; i < 9; i++) {
-            String input = Paths.get("input", "generated", "input" + i + ".txt").toString();
+            String input = "src\\ProblemD\\input\\generated\\input" + i + ".txt";
             test(i, should, problemD(input));
         }
     }
@@ -26,14 +27,14 @@ public class Problem_D_Template {
             System.out.println("Test " + index + " was not successful was: " + is + " should be " + should + ".");
         }
     }
-
+*/
     //    Change signature if you want to use the debugging helper methods
-    public static int problemD(String input) throws Exception {
-        //public static void main(String[] args) throws Exception {
-        long startTime = System.currentTimeMillis();
-        BufferedReader br = new BufferedReader(new FileReader(input));
+    //public static int problemD(String input) throws Exception {
+    public static void main(String[] args) throws Exception {
+        //long startTime = System.currentTimeMillis();
+        //BufferedReader br = new BufferedReader(new FileReader(input));
         //Reading in n and m
-        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine()); // number of cities
         int m = Integer.parseInt(br.readLine()); // number of roads
 
@@ -48,6 +49,7 @@ public class Problem_D_Template {
         // index n+1:V-2 corresponds to the roads
         // index V-1 corresponds to the sink
         Edge[][] edges = new Edge[V][];
+        edges[V - 1] = new Edge[0];
 
 
         // TODO Store which roads connect to which cities in a map (Key: index of city)
@@ -89,7 +91,7 @@ public class Problem_D_Template {
             edges[i][0] = new Edge(i, V - 1, 1, false);
             //res
             for (int j = 1; j < roads.size() + 1; j++) {
-                edges[i][j] = new Edge(i, roads.get(j), 1, true);
+                edges[i][j] = new Edge(i, roads.get(j - 1), 1, true);
             }
         }
 
@@ -116,13 +118,14 @@ public class Problem_D_Template {
             }
             graph.resetFlow();
         }
-        //System.out.println(high);
+        System.out.print(low);
         // Debugging help (your algorithm should be able to run in under ~2s)
+        /*
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
         double elapsedSeconds = (double) elapsedTime / 1000;
         System.out.println("The Algorithm took " + (elapsedSeconds) + (" seconds."));
-        return low;
+        return low;*/
     }
 
     public static int edmondsKarp(Graph rGraph) {
