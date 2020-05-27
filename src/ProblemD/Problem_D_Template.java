@@ -1,12 +1,14 @@
+package ProblemD;
+
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Optional;
 
 public class Problem_D_Template {
-//    Debugging helper
+    //    Debugging helper
 //    public static void main(String[] args) throws Exception{
 //        int should = 10;
 //        for (int i = 0; i < 9; i++) {
@@ -24,7 +26,7 @@ public class Problem_D_Template {
 //    }
 //    Change signature if you want to use the debugging helper methods
 //    public static int problemD(String input) throws Exception{
-    public static void main(String[] args) throws Exception{//int problemD(String input) throws Exception{//
+    public static void main(String[] args) throws Exception {//int problemD(String input) throws Exception{//
         // DEBUG: long startTime = System.currentTimeMillis();
         // BufferedReader br = new BufferedReader(new FileReader(input);
         // Reading in n and m
@@ -35,7 +37,7 @@ public class Problem_D_Template {
         // In our flow-graph we have n + m + 2 vertices
         final int V = n + m + 2;
         int source = 0;
-        int sink = V -1;
+        int sink = V - 1;
         // Remember this is an adjacency-LIST implementation only the first index of the two-dimensional array
         // corresponds to the number of an actual edge
         // index 0 corresponds to the sink
@@ -44,36 +46,51 @@ public class Problem_D_Template {
         // index V-1 corresponds to the sink
         Edge[][] edges = new Edge[V][];
 
+
         // TODO Store which roads connect to which cities in a map (Key: index of city)
-        HashMap<Integer,ArrayList<Integer>> citiesToRoads = new HashMap<>();
-        for (int i = 1; i < n+1; i++) {
-            citiesToRoads.put(i,new ArrayList<>());
+        HashMap<Integer, ArrayList<Integer>> citiesToRoads = new HashMap<>();
+        for (int i = 1; i < n + 1; i++) {
+            citiesToRoads.put(i, new ArrayList<>());
         }
+
         // Our source connects to each "road"
         edges[source] = new Edge[m];
         // iterating through our edges
-        for (int j = n + 1; j < V-1; j++) {
+        for (int j = n + 1; j < V - 1; j++) {
             // TODO Add edges with capacity 1 from source to roads
             // e.g. edges[0][?] = new Edge(0,j, 1,false);
+            edges[0][j - n - 1] = new Edge(0, j, 1, false);
 
-            // TODO Read in all roads and crate 2 edges for each (edges connect to each adjacent city)
+            // TODO Read in all roads and create 2 edges for each (edges connect to each adjacent city)
             String[] destinations = br.readLine().split(" ");
+            int firstCity = Integer.parseInt(destinations[0]);
+            int secondCity = Integer.parseInt(destinations[1]);
             edges[j] = new Edge[2];
+            edges[j][0] = new Edge(j, firstCity, 1, false);
+            edges[j][1] = new Edge(j, secondCity, 1, false);
 
             // TODO store which roads connect to a city in citiesToRoads (to create residual Edges from cities to roads)
+            citiesToRoads.get(firstCity).add(secondCity);
+            citiesToRoads.get(secondCity).add(firstCity);
         }
         br.close();
 
         //Iterating through all cities
-        for (int i=1; i<n+1; i++){
+        for (int i = 1; i < n + 1; i++) {
             ArrayList<Integer> roads = citiesToRoads.get(i);
             // Every "city" has one Edge to the sink
             // and roads.size() residual Edges for adjacent roads
             edges[i] = new Edge[1 + roads.size()];
             // TODO for each city create residual edges for each connecting road
+            //sink
+            edges[i][0] = new Edge(i, V - 1, 1, false);
+            //res
+            for (int j = 1; j < roads.size() + 1; j++) {
+                edges[i][j] = new Edge(i, roads.get(j), 1, true);
+            }
         }
 
-        Graph graph = new Graph(edges,n,m);
+        Graph graph = new Graph(edges, n, m);
         // d can be zero for graph with 1 vertex.
         int low = 0, high = n;
         // Run binary search to solve for d.
@@ -82,18 +99,21 @@ public class Problem_D_Template {
             int mid = (low + high) / 2;
 
             // TODO update edges from cities to sink with capacity d (=mid)
+            for (int i = 1; i < n + 1; i++) {
+                edges[i][0].setCapacity(mid);
+            }
 
             // find MaxFLow
             int maxFlow = edmondsKarp(graph);
-            if (???) {
-                high = ?;
+            if (maxFlow == m) {
+                high = mid;
                 // Here d > mid.
             } else {
-                low = ?;
+                low = mid + 1;
             }
             graph.resetFlow();
         }
-        System.out.println(??);
+        System.out.println(high);
         // Debugging help (your algorithm should be able to run in under ~2s)
 //        long stopTime = System.currentTimeMillis();
 //        long elapsedTime = stopTime - startTime;
@@ -108,24 +128,46 @@ public class Problem_D_Template {
         int sink = rGraph.getV() - 1;
 
         // TODO find s,t-path
+        //Bene: nicht sicher, ob die BFS richtig ist
+        Optional<Edge[]> parentOptional = bfs(rGraph);
+        while (parentOptional.isPresent()) {
+            Edge[] parent = parentOptional.get();
+            // TODO find minFlow in s,t-path stored in the parent array
+            // TODO Update edges and residualEdges with minFlow of the path
 
-        // TODO find minFlow in s,t-path stored in the parent array
 
-        // TODO Update edges and residualEdges with minFlow of the path
-
+            parentOptional = bfs(rGraph);
+        }
         return maxFlow;
     }
 
-    public static Optional<Edge[]> bfs(Graph graph){
+    //Bene: Nicht sicher ob das fertig ist
+    public static Optional<Edge[]> bfs(Graph graph) {
         int V = graph.getV();
         Edge[] parent = new Edge[V];
         boolean[] visited = new boolean[V];
         // TODO implement BFS and return a source-sink-path given by an array of Edges if such a path is found
+        LinkedList<Integer> queue = new LinkedList<>();
+        queue.add(0);
+        while (!queue.isEmpty()) {
+            int u = queue.removeFirst();
+            for (Edge edge : graph.getEdges()[u]) {
+                int dest = edge.getDest();
+                if (visited[dest]) {
+                    parent[dest] = edge;
+                    queue.add(dest);
+                }
+            }
+            visited[u] = true;
+            if (u == V - 1) {
+                break;
+            }
+        }
 
-        return visited[sink] ? Optional.of(parent) : Optional.empty();
+        return visited[V - 1] ? Optional.of(parent) : Optional.empty();
     }
 
-    public static class Edge{
+    public static class Edge {
         int capacity;
         int flow;
         boolean res;
@@ -144,7 +186,7 @@ public class Problem_D_Template {
         }
 
         public int getRemainingCapacity() {
-            return capacity-flow;
+            return capacity - flow;
         }
 
         public boolean isRes() {
@@ -163,23 +205,23 @@ public class Problem_D_Template {
             this.capacity = capacity;
         }
 
-        public void addToFlow(int diff){
+        public void addToFlow(int diff) {
             this.flow += diff;
         }
 
     }
 
-    public static class Graph{
+    public static class Graph {
         Edge[][] edges;
         int n;
         int m;
         int V;
 
-        Graph(Edge[][] edges,int n, int m){
+        Graph(Edge[][] edges, int n, int m) {
             this.edges = edges;
             this.n = n;
             this.m = m;
-            this.V = n+m+2;
+            this.V = n + m + 2;
         }
 
         public int getV() {
@@ -190,7 +232,7 @@ public class Problem_D_Template {
             return edges;
         }
 
-        public void resetFlow(){
+        public void resetFlow() {
             for (int i = 0; i < edges.length; i++) {
                 if (edges[i] != null) {
                     for (int j = 0; j < edges[i].length; j++) {
