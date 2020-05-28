@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class Problem_D_Template {
     //    Debugging helper
-
+/*
     public static void main(String[] args) throws Exception {
         int should = 10;
         for (int i = 0; i < 9; i++) {
@@ -27,14 +27,14 @@ public class Problem_D_Template {
             System.out.println("Test " + index + " was not successful was: " + is + " should be " + should + ".");
         }
     }
-
+*/
     //    Change signature if you want to use the debugging helper methods
-    public static int problemD(String input) throws Exception {
-    //public static void main(String[] args) throws Exception {
+    //public static int problemD(String input) throws Exception {
+    public static void main(String[] args) throws Exception {
         long startTime = System.currentTimeMillis();
-        BufferedReader br = new BufferedReader(new FileReader(input));
+        //BufferedReader br = new BufferedReader(new FileReader(input));
         //Reading in n and m
-        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine()); // number of cities
         int m = Integer.parseInt(br.readLine()); // number of roads
 
@@ -70,9 +70,7 @@ public class Problem_D_Template {
             String[] destinations = br.readLine().split(" ");
             int firstCity = Integer.parseInt(destinations[0]);
             int secondCity = Integer.parseInt(destinations[1]);
-            edges[j] = new Edge[2];
-            edges[j][0] = new Edge(j, firstCity, 1, false);
-            edges[j][1] = new Edge(j, secondCity, 1, false);
+            edges[j] = new Edge[]{new Edge(j, firstCity, 1, false), new Edge(j, secondCity, 1, false)};
 
             // TODO store which roads connect to a city in citiesToRoads (to create residual Edges from cities to roads)
             citiesToRoads.get(firstCity).add(j);
@@ -118,59 +116,40 @@ public class Problem_D_Template {
             }
             graph.resetFlow();
         }
-        //System.out.print(low);
+        System.out.print(low);
         // Debugging help (your algorithm should be able to run in under ~2s)
 
+        /*
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
         double elapsedSeconds = (double) elapsedTime / 1000;
         System.out.println("The Algorithm took " + (elapsedSeconds) + (" seconds."));
-        return low;
+        return low;*/
     }
 
     public static int edmondsKarp(Graph rGraph) {
         //long startTime = System.currentTimeMillis();
         int maxFlow = 0;
         int source = 0;
-        int sink = rGraph.getV() - 1;
+        int sink = rGraph.V - 1;
 
         // TODO find s,t-path
         //Bene: nicht sicher, ob die BFS richtig ist
-        int count = 0;
         Optional<Edge[]> parentOptional = bfs(rGraph);
+        Edge[] parent;
         while (parentOptional.isPresent()) {
-            Edge[] parent = parentOptional.get();
+            parent = parentOptional.get();
             // TODO find minFlow in s,t-path stored in the parent array
-            int currentNode = sink;
-            /*
-            int minFlow = parent[sink].getRemainingCapacity();
-            while (currentNode != source) {
-                int tempFlow = parent[currentNode].getRemainingCapacity();
-                if (tempFlow < minFlow) {
-                    minFlow = tempFlow;
-                }
-                currentNode = parent[currentNode].getStart();
-            }*/
+
             // TODO Update edges and residualEdges with minFlow of the path
-            currentNode = sink;
+            int currentNode = sink;
             while (currentNode != source) {
                 parent[currentNode].updateFlow();
                 currentNode = parent[currentNode].getStart();
             }
             ++maxFlow;
             parentOptional = bfs(rGraph);
-            ++count;
         }
-        System.out.println("BFS: " + count);
-        /*
-        for (Edge edge : rGraph.getEdges()[source]) {
-            maxFlow += edge.flow;
-        }*/
-        /*
-        long stopTime = System.currentTimeMillis();
-        long elapsedTime = stopTime - startTime;
-        double elapsedSeconds = (double) elapsedTime / 1000;
-        System.out.println("edmon karp took " + (elapsedSeconds) + (" seconds."));*/
         return maxFlow;
     }
 
@@ -186,23 +165,17 @@ public class Problem_D_Template {
         while (!queue.isEmpty()) {
             int u = queue.removeFirst();
             for (Edge edge : graph.getEdges()[u]) {
-                if (edge.getRemainingCapacity() > 0) {
-                    int dest = edge.getDest();
-                    if (!visited[dest]) {
-                        parent[dest] = edge;
-                        queue.add(dest);
-                    }
+                if (edge.getRemainingCapacity() > 0 && !visited[edge.dest]) {
+                    visited[edge.dest] = true;
+                    parent[edge.dest] = edge;
+                    queue.add(edge.dest);
                 }
             }
-            visited[u] = true;
+
             if (u == V - 1) {
                 break;
             }
-        }/*
-        long stopTime = System.currentTimeMillis();
-        long elapsedTime = stopTime - startTime;
-        double elapsedSeconds = (double) elapsedTime / 1000;
-        System.out.println("bfs took " + (elapsedSeconds) + (" seconds."));*/
+        }
         return visited[V - 1] ? Optional.of(parent) : Optional.empty();
     }
 
@@ -245,11 +218,7 @@ public class Problem_D_Template {
         }
 
         public void updateFlow() {
-            if (res) {
-                --this.flow;
-            } else {
-                ++this.flow;
-            }
+            ++this.flow;
         }
 
     }
