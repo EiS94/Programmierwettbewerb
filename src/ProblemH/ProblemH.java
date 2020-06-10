@@ -10,11 +10,11 @@ public class ProblemH {
 
     public static void main(String[] args) throws Exception{
 
-        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String path = "C:\\Users\\Benedikt\\Desktop\\UNI\\Informatik\\6.Semester\\Seminar Prog\\seminarprogproblemc\\src\\ProblemH\\Samples\\";
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        /*String path = "src\\ProblemH\\Samples\\";
         path += "Sample5 934.txt";
         BufferedReader br = new BufferedReader(new FileReader(path));
-
+*/
         //Einlesen
         int numberKeys = Integer.parseInt(br.readLine());
         int[] soll = new int[numberKeys];
@@ -41,8 +41,7 @@ public class ProblemH {
 
         //keys final array input
         int sub = lengthOfLongestSubsequence(keys);
-
-        System.out.println(numberKeys - sub);
+        System.out.print(numberKeys - sub);
     }
 
     public static int lengthOfLongestSubsequence(int[] array){
@@ -55,10 +54,6 @@ public class ProblemH {
         int max = 0;
         int temp;
         for (int i = 0; i < array.length; i++) {
-            /*
-            if (array.length - i <= max){
-                break;
-            }*/
             temp = lengthOfDownSub(array, i);
             if (temp > max){
                 max = temp;
@@ -79,11 +74,12 @@ public class ProblemH {
                 helpList.add(array[actual]);
             }
             //next int smaller then last in helpList
-            else{
+            else if (array[actual] < helpList.get(0)){
                 //go through helpList back to front, until next int in helpList smaller then array int
                 for (int j = helpList.size() - 2; j >= 0; j--) {
                     if (array[actual] < helpList.get(j)){
                         helpList.set(j + 1, array[actual]);
+                        break;
                     }
                 }
             }
@@ -95,10 +91,6 @@ public class ProblemH {
         int max = 0;
         int temp;
         for (int i = 0; i < array.length; i++) {
-            /*
-            if (array.length - i <= max){
-                break;
-            }*/
             temp = lengthOfUpSub(array, i);
             if (temp > max){
                 max = temp;
@@ -120,11 +112,12 @@ public class ProblemH {
                 helpList.add(array[actual]);
             }
             //next int smaller then last in helpList
-            else{
+            else if (array[actual] > helpList.get(0)){
                 //go through helpList back to front, until next int in helpList smaller then array int
                 for (int j = helpList.size() - 2; j >= 0; j--) {
                     if (array[actual] > helpList.get(j)){
                         helpList.set(j + 1, array[actual]);
+                        break;
                     }
                 }
             }
