@@ -1,7 +1,6 @@
 package ProblemM.src;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,6 +16,7 @@ public class ProblemM {
         public int color = 0;
         public long d = Long.MAX_VALUE;
         public LinkedList<Edge> edges = new LinkedList<>();
+        public boolean visited = false;
     }
 
     public static class Edge {
@@ -35,7 +35,7 @@ public class ProblemM {
         }
     }
 
-    //public static String path = "/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemM/samples/sample-M.2.in";
+    //public static String path = "D:\\SeminarAlgorithmenFürProgrammierwettbewerbe\\seminarprogproblemc\\src\\ProblemM\\samples\\helpMe.txt";
 
     public static void main(String[] args) throws Exception {
         nodes = new HashMap<>();
@@ -43,7 +43,6 @@ public class ProblemM {
 
         //start reading Input
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
         String firstLine = reader.readLine();
         String[] firstLineString = firstLine.split(" ");
         int numberOfNodes = Integer.parseInt(firstLineString[0]) + 1;
@@ -106,30 +105,37 @@ public class ProblemM {
         PriorityQueue<Node> queue = new PriorityQueue<>(c);
 
         queue.add(nodes.get(startNode));
+        /*
         for (int i = 1; i < numberOfNodes; i++) {
             if (i != startNode) {
                 queue.add(nodes.get(i));
             }
             queue.add(nodes.get(-i));
         }
+         */
         //Queue sorted
 
         while (!queue.isEmpty()) {
             Node u = queue.poll();
+            if (u.visited)
+                continue;
+            u.visited = true;
             for (Edge edge : u.edges) {
                 Node neighbour = nodes.get(edge.nextNode);
 
-                if (neighbour.d != Long.MAX_VALUE && neighbour.equals(endNode)) {
+                if (neighbour.d != Long.MAX_VALUE && neighbour.color == 1 && neighbour.equals(endNode)) {
                     System.out.print(neighbour.d);
                     return;
                 }
 
+
                 //Relax
-                if (neighbour.color != 1 && neighbour.d > u.d + edge.weight) {
+                if (neighbour.color != 1 && neighbour.d > u.d + edge.weight && u.d + edge.weight > 0) {
                     neighbour.d = u.d + edge.weight;
+                    //u.color = 1;
 
                     //DecreaseKey
-                    queue.add(u);
+                    queue.add(neighbour);
 
                 }
                 u.color = 1;

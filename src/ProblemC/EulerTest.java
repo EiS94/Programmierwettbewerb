@@ -1,6 +1,7 @@
 package ProblemC;
 
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.LinkedList;
 public class EulerTest {
@@ -8,7 +9,7 @@ public class EulerTest {
 
     public static void main(String[] args) throws Exception {
         //start get Input
-        BufferedReader reader = new BufferedReader(new StringReader(Samples.sample4));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder inputBuilder = new StringBuilder();
         String line = reader.readLine();
         while (line != null) {
@@ -258,8 +259,8 @@ public class EulerTest {
 
         for (int j = 1; 1 << j <= n; j++) {
             for (int i = 0; i + (1 << j) - 1 < n; i++) {
-                System.out.println("for-Schleife:" + (i + (1 << j) - 1));
-                System.out.println((i + (1 << (j - 1))));
+                //System.out.println("for-Schleife:" + (i + (1 << j) - 1));
+                //System.out.println((i + (1 << (j - 1))));
                 if (input[sparse[i][j - 1]] < input[sparse[i + (1 << (j - 1))][j - 1]]) {
                     sparse[i][j] = sparse[i][j - 1];
                 } else {
