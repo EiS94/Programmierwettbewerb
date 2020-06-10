@@ -1,0 +1,131 @@
+package ProblemH;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+public class ProblemH {
+
+    public static void main(String[] args) throws Exception{
+
+        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String path = "C:\\Users\\Benedikt\\Desktop\\UNI\\Informatik\\6.Semester\\Seminar Prog\\seminarprogproblemc\\src\\ProblemH\\Samples\\";
+        path += "Sample2 2.txt";
+        BufferedReader br = new BufferedReader(new FileReader(path));
+
+        //Einlesen
+        int numberKeys = Integer.parseInt(br.readLine());
+        int[] keys1 = new int[numberKeys];
+        String[] keysString = br.readLine().split(" ");
+        for (int i = 0; i < numberKeys; i++) {
+            keys1[i] = Integer.parseInt(keysString[i]) - 1;
+        }
+
+        int[] goal = new int[numberKeys];
+        keysString = br.readLine().split(" ");
+        for (int i = 0; i < numberKeys; i++) {
+            keys1[i] = Integer.parseInt(keysString[i]) - 1;
+        }
+
+        //Translation
+        int[] keys2 = new int[numberKeys];
+        for (int i = 0; i < numberKeys; i++) {
+            keys2[keys1[i]] = i;
+        }
+        int[] keys = new int[numberKeys];
+        for (int i = 0; i < numberKeys; i++) {
+            keys[i] = keys2[keys1[i]];
+        }
+
+        //keys final array input
+        int sub = lengthOfLongestSubsequence(keys);
+
+        System.out.println(numberKeys - sub);
+    }
+
+    public static int lengthOfLongestSubsequence(int[] array){
+        int up = lengthOfLongestUpSub(array);
+        int down = lengthOfLongestDownSub(array);
+        return Math.max(up, down);
+    }
+
+    public static int lengthOfLongestDownSub(int[] array){
+        int max = 0;
+        int temp;
+        for (int i = 0; i < array.length; i++) {
+            if (array.length - i <= max){
+                break;
+            }
+            temp = lengthOfDownSub(array, i);
+            if (temp > max){
+                max = temp;
+            }
+        }
+        return max;
+    }
+
+    public static int lengthOfDownSub(int[] array, int start){
+        //length of longest Subsequence from start
+        ArrayList<Integer> helpList = new ArrayList<>();
+        helpList.add(array[start]);
+        int actual;
+        for (int i = array.length + start; i >= start + 1; i--) {
+            actual = i % array.length;
+            //next int larger then last in helpList?
+            if (array[actual] < helpList.get(helpList.size() - 1)){
+                helpList.add(array[actual]);
+            }
+            //next int smaller then last in helpList
+            else{
+                //go through helpList back to front, until next int in helpList smaller then array int
+                for (int j = helpList.size() - 2; j >= 0; j--) {
+                    if (array[actual] < helpList.get(j)){
+                        helpList.set(j + 1, array[actual]);
+                    }
+                }
+            }
+        }
+        return helpList.size();
+    }
+
+    public static int lengthOfLongestUpSub(int[] array){
+        int max = 0;
+        int temp;
+        for (int i = 0; i < array.length; i++) {
+            if (array.length - i <= max){
+                break;
+            }
+            temp = lengthOfUpSub(array, i);
+            if (temp > max){
+                max = temp;
+            }
+        }
+        return max;
+    }
+
+    public static int lengthOfUpSub(int[] array, int start){
+        //length of longest Subsequence from start
+        ArrayList<Integer> helpList = new ArrayList<>();
+        helpList.add(array[start]);
+        int actual;
+        for (int i = start + 1; i < array.length + start + 1; i++) {
+            actual = i % array.length;
+            //next int larger then last in helpList?
+            if (array[actual] > helpList.get(helpList.size() - 1)){
+                helpList.add(array[actual]);
+            }
+            //next int smaller then last in helpList
+            else{
+                //go through helpList back to front, until next int in helpList smaller then array int
+                for (int j = helpList.size() - 2; j >= 0; j--) {
+                    if (array[actual] > helpList.get(j)){
+                        helpList.set(j + 1, array[actual]);
+                    }
+                }
+            }
+        }
+        return helpList.size();
+    }
+}
