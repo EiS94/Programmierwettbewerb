@@ -12,31 +12,31 @@ public class ProblemH {
 
         //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String path = "C:\\Users\\Benedikt\\Desktop\\UNI\\Informatik\\6.Semester\\Seminar Prog\\seminarprogproblemc\\src\\ProblemH\\Samples\\";
-        path += "Sample2 2.txt";
+        path += "Sample5 934.txt";
         BufferedReader br = new BufferedReader(new FileReader(path));
 
         //Einlesen
         int numberKeys = Integer.parseInt(br.readLine());
-        int[] keys1 = new int[numberKeys];
+        int[] soll = new int[numberKeys];
         String[] keysString = br.readLine().split(" ");
         for (int i = 0; i < numberKeys; i++) {
-            keys1[i] = Integer.parseInt(keysString[i]) - 1;
+            soll[i] = Integer.parseInt(keysString[i]) - 1;
         }
 
-        int[] goal = new int[numberKeys];
+        int[] ist = new int[numberKeys];
         keysString = br.readLine().split(" ");
         for (int i = 0; i < numberKeys; i++) {
-            keys1[i] = Integer.parseInt(keysString[i]) - 1;
+            ist[i] = Integer.parseInt(keysString[i]) - 1;
         }
 
         //Translation
-        int[] keys2 = new int[numberKeys];
+        int[] map = new int[numberKeys];
         for (int i = 0; i < numberKeys; i++) {
-            keys2[keys1[i]] = i;
+            map[soll[i]] = i;
         }
         int[] keys = new int[numberKeys];
         for (int i = 0; i < numberKeys; i++) {
-            keys[i] = keys2[keys1[i]];
+            keys[i] = map[ist[i]];
         }
 
         //keys final array input
@@ -55,9 +55,10 @@ public class ProblemH {
         int max = 0;
         int temp;
         for (int i = 0; i < array.length; i++) {
+            /*
             if (array.length - i <= max){
                 break;
-            }
+            }*/
             temp = lengthOfDownSub(array, i);
             if (temp > max){
                 max = temp;
@@ -71,7 +72,7 @@ public class ProblemH {
         ArrayList<Integer> helpList = new ArrayList<>();
         helpList.add(array[start]);
         int actual;
-        for (int i = array.length + start; i >= start + 1; i--) {
+        for (int i = start + 1; i < array.length + start + 1; i++) {
             actual = i % array.length;
             //next int larger then last in helpList?
             if (array[actual] < helpList.get(helpList.size() - 1)){
@@ -94,9 +95,10 @@ public class ProblemH {
         int max = 0;
         int temp;
         for (int i = 0; i < array.length; i++) {
+            /*
             if (array.length - i <= max){
                 break;
-            }
+            }*/
             temp = lengthOfUpSub(array, i);
             if (temp > max){
                 max = temp;
@@ -112,6 +114,7 @@ public class ProblemH {
         int actual;
         for (int i = start + 1; i < array.length + start + 1; i++) {
             actual = i % array.length;
+
             //next int larger then last in helpList?
             if (array[actual] > helpList.get(helpList.size() - 1)){
                 helpList.add(array[actual]);
