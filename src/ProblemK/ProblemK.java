@@ -7,12 +7,12 @@ import java.util.LinkedList;
 public class ProblemK {
 
 
-    public static void main(String[] args) throws Exception{
+    public static int main(String[] args) throws Exception{
 
         //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         //int input = Integer.parseInt(br.readLine());
 
-        long input = 100;
+        long input = Long.parseLong(args[0]);
 
         double sqrt = Math.sqrt(input);
         long Intsqrt = (long) sqrt;
@@ -87,6 +87,7 @@ public class ProblemK {
         }
 
         */
-        System.out.print(result);
+        //System.out.print(result);
+        return result;
     }
 }
