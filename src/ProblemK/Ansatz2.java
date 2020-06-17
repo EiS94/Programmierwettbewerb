@@ -11,6 +11,15 @@ public class Ansatz2 {
         //int input = Integer.parseInt(br.readLine());
 
         long input = Long.parseLong(args[0]);;
+        if(input == 0){
+            System.out.print("0");
+            return 0;
+        }
+
+        if (input == 1){
+            System.out.print("1");
+            return 1;
+        }
 
         double sqrt = Math.sqrt(input);
         long Intsqrt = (long) sqrt;

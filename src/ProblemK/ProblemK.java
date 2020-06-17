@@ -9,9 +9,10 @@ public class ProblemK {
 
     public static int main(String[] args) throws Exception{
 
-        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        //int input = Integer.parseInt(br.readLine());
-
+        /*
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        long input = Long.parseLong(br.readLine());
+        */
         long input = Long.parseLong(args[0]);
 
         double sqrt = Math.sqrt(input);
@@ -24,10 +25,12 @@ public class ProblemK {
             ++counter;
         }
         if (counter != 0) {
-            System.out.println("counter: " + counter + ", divider: 2");
+            //System.out.println("counter: " + counter + ", divider: 2");
+            /*
             if (2 < sqrt) {
                 ++counter;
-            }
+            }*/
+            ++counter;
             result *= counter;
         }
 
@@ -39,54 +42,19 @@ public class ProblemK {
                 ++counter;
             }
             if (counter != 0) {
-                System.out.println("counter: " + counter + ", divider: " + dividor);
-                if (dividor < sqrt) {
+                //System.out.println("counter: " + counter + ", divider: " + dividor);
+                //if (dividor < sqrt) {
                     ++counter;
-                }
+                //}
                 result *= counter;
             }
             dividor += 2;
         }
 
-        //Input ist Primzahl
-        if (result == 1){
-            ++result;
+        if (input > 1){
+            result *= 2;
         }
 
-        /*
-        for (Integer count:list) {
-            result *= (1 + count);
-        }
-        */
-
-        /*
-        int[] count = new int[sqrt];
-        int index = 0;
-
-        while (input % 2 == 0){
-            input = input >> 1;
-            ++count[index];
-        }
-        ++index;
-
-        int dividor = 3;
-        while(dividor <= sqrt){
-          while(input % dividor == 0){
-              input /= dividor;
-              ++count[index];
-          }
-          ++index;
-          dividor += 2;
-        }
-
-        for (int i = 0; i < sqrt; i++) {
-            if (count[i] == 0){
-                break;
-            }
-            result *= (1 + count[i]);
-        }
-
-        */
         //System.out.print(result);
         return result;
     }
