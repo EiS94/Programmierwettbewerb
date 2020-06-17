@@ -7,9 +7,11 @@ public class Ansatz2 {
 
     public static int main(String[] args) throws Exception {
 
-        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        //int input = Integer.parseInt(br.readLine());
+        /*
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        long input = Long.parseLong(br.readLine());
 
+         */
         long input = Long.parseLong(args[0]);;
         if(input == 0){
             System.out.print("0");
