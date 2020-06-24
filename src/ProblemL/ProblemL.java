@@ -12,10 +12,11 @@ public class ProblemL {
 
     public static void main(String[] args) throws IOException {
 
-        String file = "/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemL/Samples/sample1.txt";
+        //String path = "C:\\Users\\Benedikt\\Desktop\\UNI\\Informatik\\6.Semester\\Seminar Prog\\Prog\\seminarprogproblemc\\src\\ProblemL\\Samples\\";
+        //String file = "sample2.txt";
 
-        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedReader br = new BufferedReader(new FileReader(file));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        //BufferedReader br = new BufferedReader(new FileReader(path + file));
 
         String[] strings = br.readLine().split(" ");
 
@@ -23,7 +24,7 @@ public class ProblemL {
         int cols = Integer.parseInt(strings[1]);
         int mountaineers = Integer.parseInt(strings[2]);
 
-        TreeNode[][] nodes = new TreeNode[rows][cols];
+        TreeNode[][] nodes = new TreeNode[cols][rows];
         TreeNode[] sortedNodes = new TreeNode[rows * cols];
         Tour[] tours = new Tour[mountaineers];
 
@@ -32,9 +33,9 @@ public class ProblemL {
         for (int i = 0; i < rows; i++) {
             strings = br.readLine().split(" ");
             for (int j = 0; j < cols; j++) {
-                TreeNode node = new TreeNode(j, i, Integer.parseInt(strings[j]));
-                nodes[i][j] = node;
-                sortedNodes[(i * cols) + j] = node;
+                TreeNode node = new TreeNode(i, j, Integer.parseInt(strings[j]));
+                nodes[j][i] = node;
+                sortedNodes[(j * rows) + i] = node;
             }
         }
         //sort mountain-map for height
@@ -51,31 +52,27 @@ public class ProblemL {
 
         for (TreeNode node : sortedNodes) {
             if (node.x > 0) {
-                TreeNode.merge(node, nodes[node.y][node.x - 1]);
+                nodes[node.y][node.x - 1].updateParent();
+                TreeNode.merge(node.parent, nodes[node.y][node.x - 1].parent);
             }
             if (node.y > 0) {
-                TreeNode.merge(node, nodes[node.y - 1][node.x]);
+                nodes[node.y - 1][node.x].updateParent();
+                TreeNode.merge(node.parent, nodes[node.y - 1][node.x].parent);
             }
-            if (node.x < cols - 1) {
-                TreeNode.merge(node, nodes[node.y][node.x + 1]);
+            if (node.x < rows - 1) {
+                nodes[node.y][node.x + 1].updateParent();
+                TreeNode.merge(node.parent, nodes[node.y][node.x + 1].parent);
             }
-            if (node.y < rows - 1) {
-                TreeNode.merge(node, nodes[node.y + 1][node.x]);
+            if (node.y < cols - 1) {
+                nodes[node.y + 1][node.x].updateParent();
+                TreeNode.merge(node.parent, nodes[node.y + 1][node.x].parent);
             }
             Tour tour;
             for (int i = 0; i < toursLeft.size(); i++) {
                 tour = toursLeft.get(i);
-                try {
-                    tour.startNode.updateParent();
+                tour.startNode.updateParent();
+                tour.endNode.updateParent();
 
-                } catch (StackOverflowError e) {
-                    System.out.println("Startnode x: " + tour.startNode.x + ", y: " + tour.startNode.y + " Node: " + node.x + ", " + node.y);
-                }
-                try {
-                    tour.endNode.updateParent();
-                } catch (StackOverflowError e) {
-                    System.out.println("Endnode x: " + tour.endNode.x + ", y: " + tour.endNode.y);
-                }
                 if (tour.startNode.parent.equals(tour.endNode.parent)) {
                     tour.value = tour.endNode.parent.height;
                     toursLeft.remove(i--);
@@ -118,9 +115,9 @@ public class ProblemL {
         }
 
         static void merge(TreeNode t1, TreeNode t2) {
-            if (t1.height <= t2.height && !t1.childs.contains(t2)) {
-                t1.parent = t2;
-                t2.childs.add(t1);
+            if (t1.height >= t2.height && !t2.childs.contains(t1)) {
+                t2.parent = t1;
+                t1.childs.add(t2);
             }
         }
 
