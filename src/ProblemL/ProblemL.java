@@ -2,10 +2,7 @@ package ProblemL;
 
 import com.sun.source.tree.Tree;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class ProblemL {
@@ -15,8 +12,13 @@ public class ProblemL {
         String path = "/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemL/Samples/";
         String file = "sample2.txt";
 
+
+
         //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedReader br = new BufferedReader(new FileReader(path + file));
+        //BufferedReader br = new BufferedReader(new FileReader(path + file));
+        String sample = Samples.createSample(50,50,10000,20);
+        //System.out.println(sample);
+        BufferedReader br = new BufferedReader(new StringReader(sample));
 
         String[] strings = br.readLine().split(" ");
 
@@ -52,36 +54,39 @@ public class ProblemL {
 
         for (TreeNode node : sortedNodes) {
             if (node.x > 0) {
-                //nodes[node.y][node.x - 1].updateParent();
+                nodes[node.y][node.x - 1].updateParent();
                 TreeNode.merge(node.parent, nodes[node.y][node.x - 1].parent);
             }
             if (node.y > 0) {
-                //nodes[node.y - 1][node.x].updateParent();
+                nodes[node.y - 1][node.x].updateParent();
                 TreeNode.merge(node.parent, nodes[node.y - 1][node.x].parent);
             }
             if (node.x < rows - 1) {
-                //nodes[node.y][node.x + 1].updateParent();
+                nodes[node.y][node.x + 1].updateParent();
                 TreeNode.merge(node.parent, nodes[node.y][node.x + 1].parent);
             }
             if (node.y < cols - 1) {
-                //nodes[node.y + 1][node.x].updateParent();
+                nodes[node.y + 1][node.x].updateParent();
                 TreeNode.merge(node.parent, nodes[node.y + 1][node.x].parent);
             }
             Tour tour;
             for (int i = 0; i < toursLeft.size(); i++) {
                 tour = toursLeft.get(i);
-                //tour.startNode.updateParent();
-                //tour.endNode.updateParent();
+                tour.startNode.updateParent();
+                tour.endNode.updateParent();
                 if (tour.startNode.parent.equals(tour.endNode.parent)) {
                     tour.value = tour.endNode.parent.height;
                     toursLeft.remove(i--);
+                    if (toursLeft.isEmpty()) {
+                        break;
+                    }
                 }
             }
         }
 
         StringBuilder sb = new StringBuilder();
-        for (Tour tour : tours) {
-            sb.append(tour.value + "\n");
+        for (Tour t : tours) {
+            sb.append(t.value + "\n");
         }
         sb.setLength(sb.length() - 1);
 
