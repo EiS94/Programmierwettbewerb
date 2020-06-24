@@ -12,11 +12,11 @@ public class ProblemL {
 
     public static void main(String[] args) throws IOException {
 
-        //String path = "C:\\Users\\Benedikt\\Desktop\\UNI\\Informatik\\6.Semester\\Seminar Prog\\Prog\\seminarprogproblemc\\src\\ProblemL\\Samples\\";
-        //String file = "sample2.txt";
+        String path = "/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemL/Samples/";
+        String file = "sample2.txt";
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        //BufferedReader br = new BufferedReader(new FileReader(path + file));
+        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new FileReader(path + file));
 
         String[] strings = br.readLine().split(" ");
 
@@ -52,27 +52,26 @@ public class ProblemL {
 
         for (TreeNode node : sortedNodes) {
             if (node.x > 0) {
-                nodes[node.y][node.x - 1].updateParent();
+                //nodes[node.y][node.x - 1].updateParent();
                 TreeNode.merge(node.parent, nodes[node.y][node.x - 1].parent);
             }
             if (node.y > 0) {
-                nodes[node.y - 1][node.x].updateParent();
+                //nodes[node.y - 1][node.x].updateParent();
                 TreeNode.merge(node.parent, nodes[node.y - 1][node.x].parent);
             }
             if (node.x < rows - 1) {
-                nodes[node.y][node.x + 1].updateParent();
+                //nodes[node.y][node.x + 1].updateParent();
                 TreeNode.merge(node.parent, nodes[node.y][node.x + 1].parent);
             }
             if (node.y < cols - 1) {
-                nodes[node.y + 1][node.x].updateParent();
+                //nodes[node.y + 1][node.x].updateParent();
                 TreeNode.merge(node.parent, nodes[node.y + 1][node.x].parent);
             }
             Tour tour;
             for (int i = 0; i < toursLeft.size(); i++) {
                 tour = toursLeft.get(i);
-                tour.startNode.updateParent();
-                tour.endNode.updateParent();
-
+                //tour.startNode.updateParent();
+                //tour.endNode.updateParent();
                 if (tour.startNode.parent.equals(tour.endNode.parent)) {
                     tour.value = tour.endNode.parent.height;
                     toursLeft.remove(i--);
