@@ -26,7 +26,7 @@ public class Test {
     }
 
     public static boolean test(long input) throws Exception {
-        int k = ProblemK.main(new String[]{String.valueOf(input)});
+        int k = 0;//ProblemK.main(new String[]{String.valueOf(input)});
         int ansatz2 = Ansatz2.main(new String[]{String.valueOf(input)});
         if (k == ansatz2){
             System.out.println("Correct! Input: " + input + ", Output: " + k);
