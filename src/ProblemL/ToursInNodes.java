@@ -5,18 +5,18 @@ import com.sun.source.tree.Tree;
 import java.io.*;
 import java.util.*;
 
-public class ProblemL {
+public class ToursInNodes {
 
     public static long main(String[] args) throws IOException {
 
-        String path = "/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemL/Samples/";
+        String path = "src\\ProblemL\\Samples\\";
         String file = "sample2.txt";
 
 
 
         //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         //BufferedReader br = new BufferedReader(new FileReader(path + file));
-        //String sample = Samples.createSample(50,50,10000,20);
+        //String sample = Samples.createSample(200,200,100000,1000000);
         //System.out.println(sample);
         long start;
         long end;
@@ -53,6 +53,13 @@ public class ProblemL {
             strings = br.readLine().split(" ");
             tours[i] = new Tour(nodes[Integer.parseInt(strings[1]) - 1][Integer.parseInt(strings[0]) - 1],
                     nodes[Integer.parseInt(strings[3]) - 1][Integer.parseInt(strings[2]) - 1]);
+            if (tours[i].startNode.equals(tours[i].endNode)){
+                tours[i].value = tours[i].startNode.height;
+            }
+            else {
+                tours[i].startNode.tours.add(tours[i]);
+                tours[i].endNode.tours.add(tours[i]);
+            }
         }
 
         ArrayList<Tour> toursLeft = new ArrayList<>(Arrays.asList(tours));
@@ -60,32 +67,23 @@ public class ProblemL {
         for (TreeNode node : sortedNodes) {
             if (node.x > 0) {
                 nodes[node.y][node.x - 1].updateParent();
+                node.updateParent();
                 TreeNode.merge(node.parent, nodes[node.y][node.x - 1].parent);
             }
             if (node.y > 0) {
                 nodes[node.y - 1][node.x].updateParent();
+                node.updateParent();
                 TreeNode.merge(node.parent, nodes[node.y - 1][node.x].parent);
             }
             if (node.x < rows - 1) {
                 nodes[node.y][node.x + 1].updateParent();
+                node.updateParent();
                 TreeNode.merge(node.parent, nodes[node.y][node.x + 1].parent);
             }
             if (node.y < cols - 1) {
                 nodes[node.y + 1][node.x].updateParent();
+                node.updateParent();
                 TreeNode.merge(node.parent, nodes[node.y + 1][node.x].parent);
-            }
-            Tour tour;
-            for (int i = 0; i < toursLeft.size(); i++) {
-                tour = toursLeft.get(i);
-                tour.startNode.updateParent();
-                tour.endNode.updateParent();
-                if (tour.startNode.parent.equals(tour.endNode.parent)) {
-                    tour.value = tour.endNode.parent.height;
-                    toursLeft.remove(i--);
-                    if (toursLeft.isEmpty()) {
-                        break;
-                    }
-                }
             }
         }
 
@@ -96,11 +94,9 @@ public class ProblemL {
         sb.setLength(sb.length() - 1);
 
         System.out.print(sb.toString());
-
         end = System.nanoTime();
         total = end - start;
         System.out.println("total: " + total/1000000000.0);
-
         return total;
     }
 
@@ -118,8 +114,9 @@ public class ProblemL {
     private static class TreeNode {
 
         TreeNode parent = this;
-        LinkedList<TreeNode> childs = new LinkedList<>();
+        boolean merged = false;
         int x, y, height;
+        ArrayList<Tour> tours = new ArrayList<>();
 
         TreeNode(int x, int y, int height) {
             this.x = x;
@@ -128,9 +125,27 @@ public class ProblemL {
         }
 
         static void merge(TreeNode t1, TreeNode t2) {
-            if (t1.height >= t2.height && !t2.childs.contains(t1)) {
+            if (!t1.merged && !t1.equals(t2) && t1.height >= t2.height) {
                 t2.parent = t1;
-                t1.childs.add(t2);
+                t2.merged = true;
+                updateTours(t1, t2);
+            }
+        }
+
+        static void updateTours(TreeNode t1, TreeNode t2){
+            LinkedList<Tour> temp = new LinkedList<>();
+            try {
+                for (Tour tour : t2.tours) {
+                    if (t1.tours.contains(tour)) {
+                        t1.tours.remove(tour);
+                        tour.value = t1.height;
+                    } else {
+                        temp.add(tour);
+                    }
+                }
+                t1.tours.addAll(temp);
+            } catch (Exception e){
+                System.out.println("Hä?");
             }
         }
 
@@ -158,5 +173,4 @@ public class ProblemL {
             return Objects.hash(x, y, height);
         }
     }
-
 }
