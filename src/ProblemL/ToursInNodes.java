@@ -9,19 +9,23 @@ public class ToursInNodes {
 
     public static long main(String[] args) throws IOException {
 
+        /*
         String path = "src\\ProblemL\\Samples\\";
         String file = "sample2.txt";
 
+         */
 
 
         //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         //BufferedReader br = new BufferedReader(new FileReader(path + file));
         //String sample = Samples.createSample(200,200,100000,1000000);
         //System.out.println(sample);
+
         long start;
         long end;
         long total;
         start = System.nanoTime();
+
 
         BufferedReader br = new BufferedReader(new StringReader(args[0]));
 
@@ -93,7 +97,8 @@ public class ToursInNodes {
         }
         sb.setLength(sb.length() - 1);
 
-        System.out.print(sb.toString());
+        //System.out.print(sb.toString());
+
         end = System.nanoTime();
         total = end - start;
         System.out.println("total: " + total/1000000000.0);
@@ -134,7 +139,6 @@ public class ToursInNodes {
 
         static void updateTours(TreeNode t1, TreeNode t2){
             LinkedList<Tour> temp = new LinkedList<>();
-            try {
                 for (Tour tour : t2.tours) {
                     if (t1.tours.contains(tour)) {
                         t1.tours.remove(tour);
@@ -144,9 +148,6 @@ public class ToursInNodes {
                     }
                 }
                 t1.tours.addAll(temp);
-            } catch (Exception e){
-                System.out.println("Hä?");
-            }
         }
 
         TreeNode updateParent() {

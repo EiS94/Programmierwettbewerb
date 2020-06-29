@@ -5,25 +5,30 @@ import com.sun.source.tree.Tree;
 import java.io.*;
 import java.util.*;
 
-public class OneDimensionalToursInNodes {
+public class IDHashSet {
 
-    public static long main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
 
+        /*
         String path = "src\\ProblemL\\Samples\\";
         String file = "sample2.txt";
 
+         */
 
 
-        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         //BufferedReader br = new BufferedReader(new FileReader(path + file));
         //String sample = Samples.createSample(200,200,100000,1000000);
         //System.out.println(sample);
+
+        /*
         long start;
         long end;
         long total;
         start = System.nanoTime();
+*/
 
-        BufferedReader br = new BufferedReader(new StringReader(args[0]));
+        //BufferedReader br = new BufferedReader(new StringReader(args[0]));
 
         String[] strings = br.readLine().split(" ");
 
@@ -31,7 +36,7 @@ public class OneDimensionalToursInNodes {
         int cols = Integer.parseInt(strings[1]);
         int mountaineers = Integer.parseInt(strings[2]);
 
-        TreeNode[] nodes = new TreeNode[rows * cols];
+        TreeNode[][] nodes = new TreeNode[cols][rows];
         TreeNode[] sortedNodes = new TreeNode[rows * cols];
         Tour[] tours = new Tour[mountaineers];
 
@@ -41,7 +46,7 @@ public class OneDimensionalToursInNodes {
             strings = br.readLine().split(" ");
             for (int j = 0; j < cols; j++) {
                 TreeNode node = new TreeNode(i, j, Integer.parseInt(strings[j]));
-                nodes[(j * rows) + i] = node;
+                nodes[j][i] = node;
                 sortedNodes[(j * rows) + i] = node;
             }
         }
@@ -51,8 +56,8 @@ public class OneDimensionalToursInNodes {
         //read mountaineers-routes
         for (int i = 0; i < mountaineers; i++) {
             strings = br.readLine().split(" ");
-            tours[i] = new Tour(nodes[((Integer.parseInt(strings[1]) - 1) * rows) + Integer.parseInt(strings[0]) - 1],
-                    nodes[((Integer.parseInt(strings[3]) - 1) * rows) + Integer.parseInt(strings[2]) - 1]);
+            tours[i] = new Tour(nodes[Integer.parseInt(strings[1]) - 1][Integer.parseInt(strings[0]) - 1],
+                    nodes[Integer.parseInt(strings[3]) - 1][Integer.parseInt(strings[2]) - 1]);
             if (tours[i].startNode.equals(tours[i].endNode)){
                 tours[i].value = tours[i].startNode.height;
             }
@@ -64,31 +69,26 @@ public class OneDimensionalToursInNodes {
 
         ArrayList<Tour> toursLeft = new ArrayList<>(Arrays.asList(tours));
 
-        int index;
         for (TreeNode node : sortedNodes) {
             if (node.x > 0) {
-                index = (node.y * rows) + node.x - 1;
-                nodes[index].updateParent();
+                nodes[node.y][node.x - 1].updateParent();
                 node.updateParent();
-                TreeNode.merge(node.parent, nodes[index].parent);
+                TreeNode.merge(node.parent, nodes[node.y][node.x - 1].parent);
             }
             if (node.y > 0) {
-                index = ((node.y - 1) * rows) + node.x;
-                nodes[index].updateParent();
+                nodes[node.y - 1][node.x].updateParent();
                 node.updateParent();
-                TreeNode.merge(node.parent, nodes[index].parent);
+                TreeNode.merge(node.parent, nodes[node.y - 1][node.x].parent);
             }
             if (node.x < rows - 1) {
-                index = (node.y * rows) + node.x + 1;
-                nodes[index].updateParent();
+                nodes[node.y][node.x + 1].updateParent();
                 node.updateParent();
-                TreeNode.merge(node.parent, nodes[index].parent);
+                TreeNode.merge(node.parent, nodes[node.y][node.x + 1].parent);
             }
             if (node.y < cols - 1) {
-                index = ((node.y + 1) * rows) + node.x;
-                nodes[index].updateParent();
+                nodes[node.y + 1][node.x].updateParent();
                 node.updateParent();
-                TreeNode.merge(node.parent, nodes[index].parent);
+                TreeNode.merge(node.parent, nodes[node.y + 1][node.x].parent);
             }
         }
 
@@ -99,21 +99,35 @@ public class OneDimensionalToursInNodes {
         sb.setLength(sb.length() - 1);
 
         System.out.print(sb.toString());
+
+        /*
         end = System.nanoTime();
         total = end - start;
         System.out.println("total: " + total/1000000000.0);
-        return total;
-
+        return sb.toString();*/
     }
 
     private static class Tour {
 
         TreeNode startNode, endNode;
         int value;
+        static int nextID = 0;
+        int ID;
 
         public Tour(TreeNode startNode, TreeNode endNode) {
             this.startNode = startNode;
             this.endNode = endNode;
+            ID = nextID++;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return ID == ((Tour) o).ID;
+        }
+
+        @Override
+        public int hashCode() {
+            return ID;
         }
     }
 
@@ -122,22 +136,19 @@ public class OneDimensionalToursInNodes {
         TreeNode parent = this;
         boolean merged = false;
         int x, y, height;
-        ArrayList<Tour> tours = new ArrayList<>();
+        HashSet<Tour> tours = new HashSet<>();
+        static int nextID = 0;
+        int ID;
 
         TreeNode(int x, int y, int height) {
             this.x = x;
             this.y = y;
             this.height = height;
+            ID = nextID++;
         }
 
         static void merge(TreeNode t1, TreeNode t2) {
-            if (t1.tours.isEmpty()){
-                t1.merged = true;
-            }
-            if (t2.tours.isEmpty()){
-                t2.merged = true;
-            }
-            if (!t2.merged && !t1.merged && !t1.equals(t2) && t1.height >= t2.height) {
+            if (!t1.merged && !t1.equals(t2) && t1.height >= t2.height) {
                 t2.parent = t1;
                 t2.merged = true;
                 updateTours(t1, t2);
@@ -145,8 +156,21 @@ public class OneDimensionalToursInNodes {
         }
 
         static void updateTours(TreeNode t1, TreeNode t2){
-            LinkedList<Tour> temp = new LinkedList<>();
-            try {
+            if (t1.tours.size() < t2.tours.size()){
+                HashSet<Tour> temp = new HashSet<>();
+                for (Tour tour : t1.tours) {
+                    if (t2.tours.contains(tour)) {
+                        t2.tours.remove(tour);
+                        tour.value = t1.height;
+                    } else {
+                        temp.add(tour);
+                    }
+                }
+                t1.tours = t2.tours;
+                t1.tours.addAll(temp);
+            }
+            else {
+                HashSet<Tour> temp = new HashSet<>();
                 for (Tour tour : t2.tours) {
                     if (t1.tours.contains(tour)) {
                         t1.tours.remove(tour);
@@ -156,8 +180,6 @@ public class OneDimensionalToursInNodes {
                     }
                 }
                 t1.tours.addAll(temp);
-            } catch (Exception e){
-                System.out.println("Hä?");
             }
         }
 
@@ -172,17 +194,12 @@ public class OneDimensionalToursInNodes {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TreeNode treeNode = (TreeNode) o;
-            return x == treeNode.x &&
-                    y == treeNode.y &&
-                    height == treeNode.height;
+            return ID == ((TreeNode) o).ID;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(x, y, height);
+            return ID;
         }
     }
 }
