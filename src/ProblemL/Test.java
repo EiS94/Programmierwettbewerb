@@ -13,8 +13,8 @@ public class Test {
         long p2Total = 0;
         int end = 1;
         for (int i = 0; i < end; i++) {
-            //p1Total += ToursInNodes.main(new String[]{sample});
-            //p2Total += IDHashSet.main(new String[]{sample});
+            //p1Total += HashSetTours.main(new String[]{sample});
+            p2Total += IDHashSet.main(new String[]{sample});
         }
         p1Total /= end;
         p2Total /= end;

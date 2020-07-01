@@ -7,7 +7,7 @@ import java.util.*;
 
 public class IDHashSet {
 
-    public static void main(String[] args) throws IOException {
+    public static long main(String[] args) throws IOException {
 
         /*
         String path = "src\\ProblemL\\Samples\\";
@@ -16,19 +16,19 @@ public class IDHashSet {
          */
 
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         //BufferedReader br = new BufferedReader(new FileReader(path + file));
         //String sample = Samples.createSample(200,200,100000,1000000);
         //System.out.println(sample);
 
-        /*
+
         long start;
         long end;
         long total;
         start = System.nanoTime();
-*/
 
-        //BufferedReader br = new BufferedReader(new StringReader(args[0]));
+
+        BufferedReader br = new BufferedReader(new StringReader(args[0]));
 
         String[] strings = br.readLine().split(" ");
 
@@ -67,8 +67,6 @@ public class IDHashSet {
             }
         }
 
-        ArrayList<Tour> toursLeft = new ArrayList<>(Arrays.asList(tours));
-
         for (TreeNode node : sortedNodes) {
             if (node.x > 0) {
                 nodes[node.y][node.x - 1].updateParent();
@@ -98,13 +96,13 @@ public class IDHashSet {
         }
         sb.setLength(sb.length() - 1);
 
-        System.out.print(sb.toString());
+        //System.out.print(sb.toString());
 
-        /*
+
         end = System.nanoTime();
         total = end - start;
         System.out.println("total: " + total/1000000000.0);
-        return sb.toString();*/
+        return total;
     }
 
     private static class Tour {
