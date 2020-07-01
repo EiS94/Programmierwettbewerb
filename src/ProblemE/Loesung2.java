@@ -7,12 +7,12 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Lösung2 {
+public class Loesung2 {
 
     public static void main(String[] args) throws Exception{
 
-        BufferedReader br = new BufferedReader(new StringReader(args[0]));
-        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        //BufferedReader br = new BufferedReader(new StringReader(args[0]));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String[] strings = br.readLine().split(" ");
         int m = Integer.parseInt(strings[0]);
         int n = Integer.parseInt(strings[1]);
@@ -89,7 +89,7 @@ public class Lösung2 {
             }
         }
 
-        System.out.println(maxMatches);
+        System.out.print(maxMatches);
     }
 
     public static class Socket{
@@ -99,7 +99,7 @@ public class Lösung2 {
 
         int ID;
         public Socket(int ID){
-            this.ID = ID;
+            this.ID = ID + 1;
         }
 
         public boolean findMatch(){
@@ -131,7 +131,7 @@ public class Lösung2 {
 
         int ID;
         public Cable(int ID){
-            this.ID = ID;
+            this.ID = ID + 1;
         }
         Socket match;
 

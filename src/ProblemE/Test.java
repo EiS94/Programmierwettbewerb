@@ -9,6 +9,6 @@ public class Test {
         String path = "src\\ProblemE\\Samples\\";
         String file = "1498.txt";
         String sample = Files.readString(Paths.get(path + file));
-        Lösung2.main(new String[]{sample});
+        Loesung2.main(new String[]{sample});
     }
 }
