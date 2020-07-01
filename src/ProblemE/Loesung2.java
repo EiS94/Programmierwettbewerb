@@ -11,8 +11,8 @@ public class Loesung2 {
 
     public static void main(String[] args) throws Exception{
 
-        //BufferedReader br = new BufferedReader(new StringReader(args[0]));
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new StringReader(args[0]));
+        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String[] strings = br.readLine().split(" ");
         int m = Integer.parseInt(strings[0]);
         int n = Integer.parseInt(strings[1]);
@@ -40,14 +40,21 @@ public class Loesung2 {
 
 
         int numMatches = 0;
-        /*
+        int maxFlowOhne = 0;
         for (Socket socket:sockets) {
             if (socket.findMatch()){
-                ++numMatches;
+                ++maxFlowOhne;
             }
         }
-        */
 
+        for(Socket socket: sockets){
+            socket.reset();
+        }
+        for(Cable cable:cables){
+            cable.reset();
+        }
+
+        /*
         //Bigger graph = tempSocket
         Socket[] tempSocket = new Socket[m + 2];
         for (int i = 0; i < m; i++) {
@@ -87,9 +94,12 @@ public class Loesung2 {
             if (numMatches > maxMatches){
                 maxMatches = numMatches;
             }
-        }
+            if (maxMatches == n || maxMatches == m + 2 || maxMatches == maxFlowOhne + 2){
+                break;
+            }
+        }*/
 
-        System.out.print(maxMatches);
+        System.out.print(maxFlowOhne);
     }
 
     public static class Socket{
