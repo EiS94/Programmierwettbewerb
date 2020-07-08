@@ -5,16 +5,13 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedList;
+import java.util.*;
 
 public class ArrayAnsatz {
 
     public static void main(String[] args) throws IOException {
 
-        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/min_multikante_lösung_ja_ca_5_sekunden.txt"));
+        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/allg_test_lösung_ja.txt"));
 
         long start;
         long end;
@@ -112,14 +109,12 @@ public class ArrayAnsatz {
             }
         }
 
-        LinkedList<Integer> Q = new LinkedList();
+        Comparator<Integer> comp = Comparator.comparingInt(integer -> nodeWeight[integer]);
+
+        PriorityQueue<Integer> Q = new PriorityQueue<Integer>(comp);
         for (int i = 0; i < N; i++) {
             Q.add(i);
         }
-
-        Comparator<Integer> comp = Comparator.comparingInt(integer -> nodeWeight[integer]);
-
-        Q.sort(comp);
 
         end = System.nanoTime();
         total = end - start2;
@@ -128,7 +123,7 @@ public class ArrayAnsatz {
         start2 = System.nanoTime();
 
         while (!Q.isEmpty()) {
-            int u = Q.remove(0);
+            int u = Q.poll();
             for (Edge edge : nodes[u]) {
                 int v = edge.nextNode;
                 if (nodeWeight[v] >= nodeWeight[u] + edge.weight) {
@@ -145,7 +140,6 @@ public class ArrayAnsatz {
                         return;
                     }
                     nodeWeight[edge.nextNode] = nodeWeight[u] + edge.weight;
-                    Q.sort(comp);
                 }
             }
         }
