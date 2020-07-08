@@ -14,7 +14,12 @@ public class ProblemN {
 
     public static void main(String[] args) throws Exception {
 
-        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/allg_test_l\u0094sung_ja.txt"));
+        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/allg_test_lösung_nein_ca_6_sekunden.txt"));
+
+        long start;
+        long end;
+        long total;
+        start = System.nanoTime();
 
         BufferedReader br = new BufferedReader(new StringReader(input));
 
@@ -142,6 +147,9 @@ public class ProblemN {
                 if (nodeWeight[edge.nextNode] >= nodeWeight[u] + edge.weight) {
                     if (workNode[edge.nextNode] && pred[edge.nextNode] != edge.ID) {
                         System.out.print("yes");
+                        end = System.nanoTime();
+                        total = end - start;
+                        System.out.println("\ntotal: " + total / 1000000000.0);
                         return;
                     }
                     nodeWeight[edge.nextNode] = nodeWeight[u] + edge.weight;
@@ -151,6 +159,9 @@ public class ProblemN {
         }
 
         System.out.print("no");
+        end = System.nanoTime();
+        total = end - start;
+        System.out.println("\ntotal: " + total / 1000000000.0);
 
         //end Dijkstra
 

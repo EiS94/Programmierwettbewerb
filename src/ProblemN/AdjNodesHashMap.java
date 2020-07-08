@@ -11,9 +11,9 @@ public class AdjNodesHashMap {
 
     public static void main(String[] args) throws Exception {
 
-        String path = "src\\ProblemN\\Samples\\";
-        String name = "langer_arbeitsweg_lösung_nein_ca_6_sekunden";
-        String input = Files.readString(Paths.get(path + name + ".txt"));
+        String path = "/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/";
+        String name = "allg_test_lösung_nein_ca_6_sekunden.txt";
+        String input = Files.readString(Paths.get(path + name));
 
         long start;
         long end;
@@ -101,6 +101,9 @@ public class AdjNodesHashMap {
         }
         //end adding edges
 
+        end = System.nanoTime();
+        total = end - start;
+        System.out.println("\nEinlesen: " + total / 1000000000.0);
 
         for (int i = 1; i < workWay.length; i++) {
             pred[workWay[i]] = workWay[i - 1];
@@ -140,9 +143,9 @@ public class AdjNodesHashMap {
 
         Q.sort(comp);
 
-        for (int i = 0; i < workWay.length; i++) {
+        /*for (int i = 0; i < workWay.length; i++) {
             System.out.print(" -> " + workWay[i]);
-        }
+        }*/
         System.out.println();
 
         while (!Q.isEmpty()) {
