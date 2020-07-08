@@ -5,18 +5,20 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 
 public class AdjNodesHashMap {
 
     public static void main(String[] args) throws Exception {
 
         String path = "src\\ProblemN\\Samples\\";
-        String name = "min_multikante_lösung_ja_ca_5_sekunden";
+        String name = "langer_arbeitsweg_lösung_nein_ca_6_sekunden";
         String input = Files.readString(Paths.get(path + name + ".txt"));
+
+        long start;
+        long end;
+        long total;
+        start = System.nanoTime();
 
         BufferedReader br = new BufferedReader(new StringReader(input));
 
@@ -105,16 +107,23 @@ public class AdjNodesHashMap {
         }
 
         //start Dijkstra
+        //init weights
         for (int i = 1; i < nodeWeight.length; i++) {
             nodeWeight[i] = Integer.MAX_VALUE;
         }
 
+        //init workWay weights
+        Edge tempEdge;
         for (int i = 0; i < workWay.length - 1; i++) {
-            for (Edge edge : edges.get(workWay[i]).values()) {
-                if (edge.nextNode == workWay[i + 1]) {
-                    nodeWeight[edge.nextNode] = nodeWeight[workWay[i]] + edge.weight;
-                }
+            tempEdge = edges.get(workWay[i]).get(workWay[i + 1]);
+            if (tempEdge.more) {
+                System.out.print("yes");
+                end = System.nanoTime();
+                total = end - start;
+                System.out.println("\ntotal: " + total / 1000000000.0);
+                return;
             }
+            nodeWeight[i + 1] = nodeWeight[workWay[i]] + tempEdge.weight;
         }
 
         LinkedList<Integer> Q = new LinkedList();
@@ -125,18 +134,33 @@ public class AdjNodesHashMap {
         Comparator<Integer> comp = new Comparator<Integer>() {
             @Override
             public int compare(Integer integer, Integer t1) {
-                return nodeWeight[integer] - nodeWeight[t1];
+                return Integer.compare(nodeWeight[integer], nodeWeight[t1]);
             }
         };
 
         Q.sort(comp);
 
+        for (int i = 0; i < workWay.length; i++) {
+            System.out.print(" -> " + workWay[i]);
+        }
+        System.out.println();
+
         while (!Q.isEmpty()) {
             int u = Q.remove(0);
             for (Edge edge : edges.get(u).values()) {
                 if (nodeWeight[edge.nextNode] >= nodeWeight[u] + edge.weight) {
-                    if (workNode[edge.nextNode] && (pred[edge.nextNode] != u || edge.more)) {
+                    if (workNode[edge.nextNode] && pred[edge.nextNode] != u) {
+                        System.out.println("u: " + u);
+                        System.out.println("pred of edge.nextNode " + edge.nextNode + ": " + pred[edge.nextNode]);
+                        System.out.println("9708 neighbours: ");
+                        for (Integer neigh:edges.get(9708).keySet()){
+                            System.out.println(neigh);
+                        }
+                        System.out.println(workNode[9708]);
                         System.out.print("yes");
+                        end = System.nanoTime();
+                        total = end - start;
+                        System.out.println("\ntotal: " + total / 1000000000.0);
                         return;
                     }
                     nodeWeight[edge.nextNode] = nodeWeight[u] + edge.weight;
@@ -146,6 +170,9 @@ public class AdjNodesHashMap {
         }
 
         System.out.print("no");
+        end = System.nanoTime();
+        total = end - start;
+        System.out.println("\ntotal: " + total / 1000000000.0);
 
         //end Dijkstra
 
@@ -160,6 +187,58 @@ public class AdjNodesHashMap {
         public Edge(int weight, int nextNode) {
             this.weight = weight;
             this.nextNode = nextNode;
+        }
+    }
+
+
+    public static final class Comparators {
+        /**
+         * Verify that a comparator is transitive.
+         *
+         * @param <T>        the type being compared
+         * @param comparator the comparator to test
+         * @param elements   the elements to test against
+         * @throws AssertionError if the comparator is not transitive
+         */
+        public static <T> void verifyTransitivity(Comparator<T> comparator, Collection<T> elements) throws IllegalArgumentException {
+            for (T first : elements) {
+                for (T second : elements) {
+                    int result1 = comparator.compare(first, second);
+                    int result2 = comparator.compare(second, first);
+                    if (result1 != -result2) {
+                        // Uncomment the following line to step through the failed case
+                        //comparator.compare(first, second);
+                        throw new IllegalArgumentException("compare(" + first + ", " + second + ") == " + result1 +
+                                " but swapping the parameters returns " + result2);
+                    }
+                }
+            }
+            for (T first : elements) {
+                for (T second : elements) {
+                    int firstGreaterThanSecond = comparator.compare(first, second);
+                    if (firstGreaterThanSecond <= 0)
+                        continue;
+                    for (T third : elements) {
+                        int secondGreaterThanThird = comparator.compare(second, third);
+                        if (secondGreaterThanThird <= 0)
+                            continue;
+                        int firstGreaterThanThird = comparator.compare(first, third);
+                        if (firstGreaterThanThird <= 0) {
+                            // Uncomment the following line to step through the failed case
+                            //comparator.compare(first, third);
+                            throw new IllegalArgumentException("compare(" + first + ", " + second + ") > 0, " +
+                                    "compare(" + second + ", " + third + ") > 0, but compare(" + first + ", " + third + ") == " +
+                                    firstGreaterThanThird);
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Prevent construction.
+         */
+        private Comparators() {
         }
     }
 }
