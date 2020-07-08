@@ -64,16 +64,23 @@ public class ArrayAnsatz {
             int b = Integer.parseInt(strings[1]) - 1;
             int c = Integer.parseInt(strings[2]);
             Edge edge = new Edge(c,b);
+
+            //update Edge, if allready in List
             if (nodes[a].contains(edge)) {
                 for (Edge e : nodes[a]) {
                     if (e.equals(edge)) {
+                        // if same weight, set multiEdge true
                         if (e.weight == edge.weight) e.multi = true;
+                        // if edge has lower weight, update weight of e
                         if (e.weight > edge.weight) e.weight = edge.weight;
                     }
                 }
             } else {
+                //if Edge is not in List, add Edge
                 nodes[a].add(edge);
             }
+
+            //same with reverse direction
             edge = new Edge(c,a);
             if (nodes[b].contains(edge)) {
                 for (Edge e : nodes[b]) {
