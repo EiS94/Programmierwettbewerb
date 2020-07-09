@@ -15,10 +15,16 @@ public class NodeAnsatz {
 
     public static void main(String[] args) throws IOException {
 
-        //String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/min_multikante_lösung_ja_ca_5_sekunden.txt"));
+        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/sample.txt"));
 
-        //BufferedReader br = new BufferedReader(new StringReader(input));
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        long start;
+        long end;
+        long total;
+
+        start = System.nanoTime();
+
+        BufferedReader br = new BufferedReader(new StringReader(input));
+        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         String[] strings = br.readLine().split(" ");
         //#Nodes
@@ -53,7 +59,6 @@ public class NodeAnsatz {
             int c = Integer.parseInt(strings[2]);
             Edge edge = new Edge(c, nodes[b]);
 
-            //update Edge, if allready in List
             if (nodes[a].edges.contains(edge)) {
                 for (Edge e : nodes[a].edges) {
                     if (e.equals(edge)) {
@@ -69,7 +74,7 @@ public class NodeAnsatz {
             }
 
             //same with reverse direction
-            edge = new Edge(c, nodes[a]);
+            edge = new Edge(c,nodes[a]);
             if (nodes[b].edges.contains(edge)) {
                 for (Edge e : nodes[b].edges) {
                     if (e.equals(edge)) {
@@ -80,7 +85,12 @@ public class NodeAnsatz {
             } else {
                 nodes[b].edges.add(edge);
             }
+
         }
+
+        end = System.nanoTime();
+        total = end - start;
+        System.out.println("\nKanten einlesen: " + total / 1000000000.0);
 
         br.close();
 

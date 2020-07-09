@@ -195,6 +195,7 @@ public class AdjNodesHashMap {
 
 
     public static final class Comparators {
+
         /**
          * Verify that a comparator is transitive.
          *
