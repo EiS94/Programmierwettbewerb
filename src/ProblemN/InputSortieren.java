@@ -6,17 +6,14 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class InputSortieren {
 
 
     public static void main(String[] args) throws IOException {
 
-        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/allg_test_lösung_nein_ca_6_sekunden.txt"));
+        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/sample2.txt"));
 
         long start;
         long end;
@@ -45,6 +42,7 @@ public class InputSortieren {
         Node node;
         strings = br.readLine().split(" ");
 
+        //save workNodes in workTour, set workNode in Node to true and store the previous Node of each Node in WorkTour
         for (int i = 0; i < K; i++) {
             node = nodes[Integer.parseInt(strings[i]) - 1];
             workTour[i] = Integer.parseInt(strings[i]) - 1;
@@ -55,6 +53,7 @@ public class InputSortieren {
 
         Tuple[] tuples = new Tuple[M];
 
+        //store all M lines as Tuple (a,b,c=weight) in Array. If a > b -> swap(a,b) for better sorting
         for (int i = 0; i < M; i++) {
             strings = br.readLine().split(" ");
             int a = Integer.parseInt(strings[0]);
@@ -69,6 +68,11 @@ public class InputSortieren {
             tuples[i] = new Tuple(a, b, c);
         }
 
+        //Sort Tuple Array 3 times
+        //end-result: 1,1,1
+        //            1,1,2
+        //            1,2,1
+        //            2,1,1 usw.
         Arrays.sort(tuples, Comparator.comparingInt(tuple -> tuple.a));
 
         Arrays.sort(tuples, (tuple, t1) -> {
@@ -88,6 +92,9 @@ public class InputSortieren {
         });
 
         br.close();
+
+        //Store Edge from a -> b to a and to b. If there are more than one Edge from a to b, only store the Edge with minimum weight.
+        //If there are more than one Edge from a to b with minimum weight, set Edge.multi to true
         int lastA = Integer.MAX_VALUE;
         int lastB = Integer.MAX_VALUE;
         int lastWeight = Integer.MAX_VALUE;
@@ -95,7 +102,7 @@ public class InputSortieren {
             int a = tuple.a - 1;
             int b = tuple.b - 1;
             int weight = tuple.weight;
-            if (lastA == a && lastB == b && lastWeight == weight && nodes[a].edges.get(nodes[a].edges.size() - 1).weight == weight) {
+            if (lastA == a && lastB == b && lastWeight == weight && nodes[a].edges.get(nodes[a].edges.size() - 1).weight == weight && nodes[a].edges.get(nodes[a].edges.size() - 1).nextNode == nodes[b]) {
                 nodes[a].edges.get(nodes[a].edges.size() - 1).multi = true;
                 if (a != b) {
                     nodes[b].edges.get(nodes[b].edges.size() - 1).multi = true;
@@ -116,7 +123,7 @@ public class InputSortieren {
         total = end - start;
         System.out.println("\nKanten einlesen: " + total / 1000000000.0);
 
-
+        //set weight of startNode to 0
         nodes[0].weight = 0;
 
         for (int i = 0; i < workTour.length - 1; i++) {
@@ -127,8 +134,12 @@ public class InputSortieren {
             }
         }
 
+        //PriorityQueue autoSort, if something changed in the Queue
+        //sort Nodes by Weight
         PriorityQueue<Node> Q = new PriorityQueue<>(Comparator.comparingInt(node2 -> node2.weight));
 
+        //Dijkstra as in the presentation, but checks additional in the if-clause for YES-Result if the edge was a multi edge
+        //-> then also return YES
         Q.addAll(Arrays.asList(nodes));
 
         while (!Q.isEmpty()) {
@@ -166,6 +177,11 @@ public class InputSortieren {
         Edge(int weight, Node nextNode) {
             this.weight = weight;
             this.nextNode = nextNode;
+        }
+
+        @Override
+        public String toString() {
+            return nextNode.id + ", " + multi + ", " + weight;
         }
     }
 

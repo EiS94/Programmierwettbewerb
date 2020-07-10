@@ -67,6 +67,7 @@ public class NodeAnsatz {
                         // if same weight, set multiEdge true
                         if (e.weight == edge.weight) {
                             e.multi = true;
+                            //if (a == 2618 && b > 2630) System.out.println("2619 -> " + (b + 1) + ": multi");
                         }
                         // if edge has lower weight, update weight of e
                         if (e.weight > edge.weight) e.weight = edge.weight;
@@ -99,6 +100,7 @@ public class NodeAnsatz {
         br.close();
 
         nodes[0].weight = 0;
+        Node n = nodes[2618];
 
         for (int i = 0; i < workTour.length - 1; i++) {
             for (Edge edge : nodes[workTour[i]].edges) {
@@ -143,6 +145,11 @@ public class NodeAnsatz {
         public Edge(int weight, Node nextNode) {
             this.weight = weight;
             this.nextNode = nextNode;
+        }
+
+        @Override
+        public String toString() {
+            return nextNode.id + ", " + multi;
         }
 
         @Override
