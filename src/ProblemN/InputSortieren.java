@@ -11,11 +11,12 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class NodeAnsatz {
+public class InputSortieren {
+
 
     public static void main(String[] args) throws IOException {
 
-        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/langer_arbeitsweg_lösung_nein_ca_6_sekunden.txt"));
+        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/allg_test_lösung_nein_ca_6_sekunden.txt"));
 
         long start;
         long end;
@@ -44,8 +45,6 @@ public class NodeAnsatz {
         Node node;
         strings = br.readLine().split(" ");
 
-        int counter = 0;
-
         for (int i = 0; i < K; i++) {
             node = nodes[Integer.parseInt(strings[i]) - 1];
             workTour[i] = Integer.parseInt(strings[i]) - 1;
@@ -54,49 +53,69 @@ public class NodeAnsatz {
             lastNode = node;
         }
 
+        Tuple[] tuples = new Tuple[M];
+
         for (int i = 0; i < M; i++) {
             strings = br.readLine().split(" ");
-            int a = Integer.parseInt(strings[0]) - 1;
-            int b = Integer.parseInt(strings[1]) - 1;
+            int a = Integer.parseInt(strings[0]);
+            int b = Integer.parseInt(strings[1]);
+            int temp;
+            if (a > b) {
+                temp = a;
+                a = b;
+                b = temp;
+            }
             int c = Integer.parseInt(strings[2]);
-            Edge edge = new Edge(c, nodes[b]);
+            tuples[i] = new Tuple(a, b, c);
+        }
 
-            if (nodes[a].edges.contains(edge)) {
-                for (Edge e : nodes[a].edges) {
-                    if (e.equals(edge)) {
-                        // if same weight, set multiEdge true
-                        if (e.weight == edge.weight) {
-                            e.multi = true;
-                        }
-                        // if edge has lower weight, update weight of e
-                        if (e.weight > edge.weight) e.weight = edge.weight;
-                    }
-                }
-            } else {
-                //if Edge is not in List, add Edge
-                nodes[a].edges.add(edge);
+        Arrays.sort(tuples, Comparator.comparingInt(tuple -> tuple.a));
+
+        Arrays.sort(tuples, (tuple, t1) -> {
+            if (tuple.a == t1.a) {
+                if (tuple.b < t1.b) return -1;
+                if (tuple.b > t1.b) return 1;
             }
+            return 0;
+        });
 
-            //same with reverse direction
-            edge = new Edge(c, nodes[a]);
-            if (nodes[b].edges.contains(edge)) {
-                for (Edge e : nodes[b].edges) {
-                    if (e.equals(edge)) {
-                        if (e.weight == edge.weight) e.multi = true;
-                        if (e.weight > edge.weight) e.weight = edge.weight;
-                    }
-                }
-            } else {
-                nodes[b].edges.add(edge);
+        Arrays.sort(tuples, (tuple, t1) -> {
+            if (tuple.a == t1.a && tuple.b == t1.b) {
+                if (tuple.weight < t1.weight) return -1;
+                if (tuple.weight > t1.weight) return 1;
             }
+            return 0;
+        });
 
+        br.close();
+        int lastA = Integer.MAX_VALUE;
+        int lastB = Integer.MAX_VALUE;
+        int lastWeight = Integer.MAX_VALUE;
+        for (Tuple tuple : tuples) {
+            int a = tuple.a - 1;
+            int b = tuple.b - 1;
+            int weight = tuple.weight;
+            if (lastA == a && lastB == b && lastWeight == weight && nodes[a].edges.get(nodes[a].edges.size() - 1).weight == weight) {
+                nodes[a].edges.get(nodes[a].edges.size() - 1).multi = true;
+                if (a != b) {
+                    nodes[b].edges.get(nodes[b].edges.size() - 1).multi = true;
+                }
+            } else if (lastA == a && lastB != b) {
+                nodes[a].edges.add(new Edge(weight, nodes[b]));
+                if (a != b) nodes[b].edges.add(new Edge(weight, nodes[a]));
+            } else if (lastA != a) {
+                nodes[a].edges.add(new Edge(weight, nodes[b]));
+                if (a != b) nodes[b].edges.add(new Edge(weight, nodes[a]));
+            }
+            lastA = a;
+            lastB = b;
+            lastWeight = weight;
         }
 
         end = System.nanoTime();
         total = end - start;
         System.out.println("\nKanten einlesen: " + total / 1000000000.0);
 
-        br.close();
 
         nodes[0].weight = 0;
 
@@ -108,12 +127,7 @@ public class NodeAnsatz {
             }
         }
 
-        PriorityQueue<Node> Q = new PriorityQueue<Node>(new Comparator<Node>() {
-            @Override
-            public int compare(Node node, Node t1) {
-                return Integer.compare(node.weight, t1.weight);
-            }
-        });
+        PriorityQueue<Node> Q = new PriorityQueue<>(Comparator.comparingInt(node2 -> node2.weight));
 
         Q.addAll(Arrays.asList(nodes));
 
@@ -124,6 +138,11 @@ public class NodeAnsatz {
                 if (v.weight >= u.weight + edge.weight) {
                     if ((v.workNode && v.pred != u) || (v.workNode && edge.multi)) {
                         System.out.print("yes");
+
+                        end = System.nanoTime();
+                        total = end - start;
+                        System.out.println("\ngesamt: " + total / 1000000000.0);
+
                         return;
                     }
                     v.weight = u.weight + edge.weight;
@@ -131,6 +150,10 @@ public class NodeAnsatz {
             }
         }
         System.out.print("no");
+
+        end = System.nanoTime();
+        total = end - start;
+        System.out.println("\ngesamt: " + total / 1000000000.0);
     }
 
 
@@ -140,20 +163,14 @@ public class NodeAnsatz {
         Node nextNode;
         boolean multi;
 
-        public Edge(int weight, Node nextNode) {
+        Edge(int weight, Node nextNode) {
             this.weight = weight;
             this.nextNode = nextNode;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return this.nextNode == ((Edge) obj).nextNode;
         }
     }
 
 
     private static class Node {
-
         ArrayList<Edge> edges = new ArrayList<>();
         int weight = 10001;
         Node pred;
@@ -161,18 +178,36 @@ public class NodeAnsatz {
         int id;
         static int idCounter = 1;
 
-        public Node() {
+        Node() {
             this.id = idCounter++;
         }
 
         @Override
         public String toString() {
-            String e = "[";
+            StringBuilder e = new StringBuilder("[");
             for (Edge edge : edges) {
-                e += ", " + edge.nextNode.id;
+                e.append(", ").append(edge.nextNode.id);
             }
-            return String.valueOf(id) + ", Edges: " + e;
+            return id + ", Edges: " + e;
+        }
+    }
+
+    private static class Tuple {
+
+        int a, b, weight;
+
+        Tuple(int a, int b, int weight) {
+            this.a = a;
+            this.b = b;
+            this.weight = weight;
+        }
+
+        @Override
+        public String toString() {
+            return a + ", " + b + ", " + weight;
         }
     }
 
 }
+
+
