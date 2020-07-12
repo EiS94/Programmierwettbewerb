@@ -1,4 +1,4 @@
-package ProblemN;
+package src.ProblemN;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class NodeAnsatz {
 
     public static void main(String[] args) throws IOException {
 
-        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/langer_arbeitsweg_lösung_nein_ca_6_sekunden.txt"));
+        String input = Files.readString(Paths.get("src\\ProblemN\\Samples\\min_multikante_lösung_ja_ca_5_sekunden.txt"));
 
         long start;
         long end;
@@ -100,7 +100,7 @@ public class NodeAnsatz {
         br.close();
 
         nodes[0].weight = 0;
-        Node n = nodes[2618];
+        //Node n = nodes[2618];
 
         for (int i = 0; i < workTour.length - 1; i++) {
             for (Edge edge : nodes[workTour[i]].edges) {
@@ -129,6 +129,8 @@ public class NodeAnsatz {
                         return;
                     }
                     v.weight = u.weight + edge.weight;
+                    Q.remove(v);
+                    Q.add(v);
                 }
             }
         }

@@ -1,4 +1,4 @@
-package ProblemN;
+package src.ProblemN;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ public class ArrayAnsatz {
 
     public static void main(String[] args) throws IOException {
 
-        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/allg_test_lösung_ja.txt"));
+        String input = Files.readString(Paths.get("src\\ProblemN\\Samples\\min_multikante_lösung_ja_ca_5_sekunden.txt"));
 
         long start;
         long end;

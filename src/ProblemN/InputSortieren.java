@@ -1,4 +1,4 @@
-package ProblemN;
+package src.ProblemN;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +13,7 @@ public class InputSortieren {
 
     public static void main(String[] args) throws IOException {
 
-        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/sample2.txt"));
+        //String input = Files.readString(Paths.get("src\\ProblemN\\Samples\\Yes.txt"));
 
         long start;
         long end;
@@ -21,8 +21,8 @@ public class InputSortieren {
 
         start = System.nanoTime();
 
-        BufferedReader br = new BufferedReader(new StringReader(input));
-        //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        //BufferedReader br = new BufferedReader(new StringReader(input));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         String[] strings = br.readLine().split(" ");
         //#Nodes
@@ -121,7 +121,7 @@ public class InputSortieren {
 
         end = System.nanoTime();
         total = end - start;
-        System.out.println("\nKanten einlesen: " + total / 1000000000.0);
+        //System.out.println("\nKanten einlesen: " + total / 1000000000.0);
 
         //set weight of startNode to 0
         nodes[0].weight = 0;
@@ -152,11 +152,13 @@ public class InputSortieren {
 
                         end = System.nanoTime();
                         total = end - start;
-                        System.out.println("\ngesamt: " + total / 1000000000.0);
+                        //System.out.println("\ngesamt: " + total / 1000000000.0);
 
                         return;
                     }
                     v.weight = u.weight + edge.weight;
+                    Q.remove(v);
+                    Q.add(v);
                 }
             }
         }
@@ -164,7 +166,7 @@ public class InputSortieren {
 
         end = System.nanoTime();
         total = end - start;
-        System.out.println("\ngesamt: " + total / 1000000000.0);
+        //System.out.println("\ngesamt: " + total / 1000000000.0);
     }
 
 

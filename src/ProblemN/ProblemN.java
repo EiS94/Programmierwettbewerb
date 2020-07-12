@@ -1,4 +1,4 @@
-package ProblemN;
+package src.ProblemN;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -14,7 +14,7 @@ public class ProblemN {
 
     public static void main(String[] args) throws Exception {
 
-        String input = Files.readString(Paths.get("/home/eike/Dokumente/Uni/6. Semester/Seminar/Git/seminarprogproblemc/src/ProblemN/Samples/allg_test_lösung_nein_ca_6_sekunden.txt"));
+        String input = Files.readString(Paths.get("src\\ProblemN\\Samples\\allg_test_lösung_ja.txt"));
 
         long start;
         long end;
